@@ -259,6 +259,27 @@
   <ItemGroup>
     <Content Include="Views\Admin\Search.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Manager\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Member\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Member\Apply.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Manager\Manager.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Member\ASuccess.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Member\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Manager\_Layout.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

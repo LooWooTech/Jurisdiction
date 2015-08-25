@@ -1,1 +1,10 @@
-﻿
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var action = Request.RequestContext.RouteData.Values["action"].ToString();
+}
+
+@section nav{
+    <li class="@(action=="Index"?"active":null)"><a href="/Member/Index"><i class="glyphicon glyphicon-home"></i>&nbsp;首页</a></li>
+}
+
+@RenderBody()

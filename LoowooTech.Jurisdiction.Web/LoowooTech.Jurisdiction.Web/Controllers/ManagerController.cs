@@ -20,5 +20,12 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             return View();
         }
 
+
+        public ActionResult Manager()
+        {
+            ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
+            return View();
+        }
+
     }
 }
