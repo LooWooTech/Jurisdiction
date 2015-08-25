@@ -26,19 +26,24 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             ViewBag.Action = RouteData.Values["action"];
             if (!string.IsNullOrEmpty(Identity.Name))
             {
-                if (Core.GroupManager.IsAdministrator(Identity.Groups))
+                string cn = Core.ADManager.GetCn(Identity.Name);
+                if (!string.IsNullOrEmpty(cn))
                 {
-                    ViewBag.BCount = Core.DataBookManager.Wait(null);
+                    if (Core.GroupManager.IsAdministrator(Identity.Groups))
+                    {
+                        ViewBag.BCount = Core.DataBookManager.Wait(null);
+                    }
+                    else
+                    {
+                        ViewBag.BCount = Core.DataBookManager.Wait(cn);
+                    }
                 }
                 else
                 {
-                    ViewBag.BCount = Core.DataBookManager.Wait(Identity.Name);
+                    ViewBag.BCount = 0;
                 }
             }
-            else
-            {
-                ViewBag.BCount = 0;
-            }
+           
             base.OnActionExecuting(filterContext);
         }
 

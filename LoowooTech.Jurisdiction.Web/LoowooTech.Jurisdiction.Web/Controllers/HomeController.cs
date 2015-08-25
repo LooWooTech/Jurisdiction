@@ -41,7 +41,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
                 throw new ArgumentException("登录失败");
             }
             HttpContext.SaveAuth(Password,user);
-            switch (Identity.Type)
+            switch (user.Type)
             {
                 case GroupType.Administrator:
                     return Redirect("/Admin/Index");

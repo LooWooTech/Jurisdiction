@@ -119,17 +119,53 @@ namespace LoowooTech.Jurisdiction.Manager
             }
             return TheNew;
         }
-        public string GetDistinguishedName(string Name)
+        /// <summary>
+        /// 通过用户名
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="PropertyName"></param>
+        /// <returns></returns>
+        private string GetPropertyValueByName(string Name, string PropertyName)
         {
-            string value = string.Empty;
             SearchResult searchResult = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", null);
             if (searchResult != null)
             {
-                value = GetProperty(searchResult, "distinguishedName");
+                return GetProperty(searchResult, PropertyName);
             }
-            return value;
+            return string.Empty;
+        }
+        /// <summary>
+        /// 获得属性distinguishedName的值
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+
+        public string GetDistinguishedName(string Name)
+        {
+            return GetPropertyValueByName(Name, "distinguishedName");
+            //string value = string.Empty;
+            //SearchResult searchResult = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", null);
+            //if (searchResult != null)
+            //{
+            //    value = GetProperty(searchResult, "distinguishedName");
+            //}
+            //return value;
+        }
+        /// <summary>
+        /// 获得属性cn的值
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        public string GetCn(string Name)
+        {
+            return GetPropertyValueByName(Name, "cn");
         }
 
+        /// <summary>
+        /// 获取当前用户所管理的组
+        /// </summary>
+        /// <param name="Name">用户名</param>
+        /// <returns></returns>
         public List<string> GetManageGroup(string Name)
         {
             SearchResult searchResult = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", null);

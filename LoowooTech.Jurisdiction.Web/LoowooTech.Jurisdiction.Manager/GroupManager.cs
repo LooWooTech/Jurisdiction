@@ -23,13 +23,17 @@ namespace LoowooTech.Jurisdiction.Manager
                     Convert.ToDateTime(str);
                 }
                 string Name=Core.ADManager.GetProperty(result, "name");
-                
-                list.Add(new Group
+                if (Name.IsChinese())
                 {
-                    Name = Name,
-                    CreateTime = time,
-                    Descriptions = Core.ADManager.GetProperty(result, "description")
-                });
+                    list.Add(new Group
+                    {
+                        Name = Name,
+                        CreateTime = time,
+                        Descriptions = Core.ADManager.GetProperty(result, "description")
+                    });
+                }
+                
+               
             }
             return list;
         }
@@ -56,12 +60,16 @@ namespace LoowooTech.Jurisdiction.Manager
                         continue;
                     }
                 }
-                list.Add(new Group
-                {
-                    Name = Core.ADManager.GetProperty(result, "name"),
-                    CreateTime = time,
-                    Descriptions = Core.ADManager.GetProperty(result, "description")
-                });
+                string Name=Core.ADManager.GetProperty(result, "name");
+                if(Name.IsChinese()){
+                    list.Add(new Group
+                    {
+                        Name = Name,
+                        CreateTime = time,
+                        Descriptions = Core.ADManager.GetProperty(result, "description")
+                    });
+                }
+              
 
             }
             return list;

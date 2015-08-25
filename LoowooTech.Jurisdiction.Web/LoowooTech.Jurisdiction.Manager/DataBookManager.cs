@@ -61,7 +61,7 @@ namespace LoowooTech.Jurisdiction.Manager
             }
             else
             {
-                List = GetList(Identity.Name);
+                List = GetList(Core.ADManager.GetCn(Identity.Name));
             }
             return List;
         }

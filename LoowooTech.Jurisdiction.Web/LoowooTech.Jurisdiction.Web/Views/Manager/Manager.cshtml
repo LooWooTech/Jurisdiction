@@ -1,6 +1,142 @@
 ﻿@{
-    ViewBag.Title = "Manager";
+    ViewBag.Title = "申请中心";
     Layout = "~/Views/Manager/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.List;
+    List<LoowooTech.Jurisdiction.Models.DataBook> Finishs = ViewBag.Finishs;
+    List<LoowooTech.Jurisdiction.Models.DataBook> Mines = ViewBag.Mines;
+    int SeriaNumber = 1;
+    int Serial = 1;
 }
 
-<h2>Manager</h2>
+<div style="position:relative;">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#Wait" data-toggle="tab"><i class="glyphicon glyphicon-fire"></i>&nbsp;待审核&nbsp;</a></li>
+        <li class=""><a href="#Finish" data-toggle="tab"><i class="glyphicon glyphicon-leaf"></i>&nbsp;已审核&nbsp;</a></li>
+        <li class=""><a href="#Mine" data-toggle="tab"><i class="glyphicon glyphicon-bookmark"></i>&nbsp;我的申请&nbsp;</a></li>
+    </ul>
+</div>
+
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="Wait">
+        @foreach (var book in List)
+        {
+            <form class="form-horizontal" action="/Safe/Message" method="post">
+                <div class="form-group">
+                    <label for="Name" class="control-label col-lg-3">申请人</label>
+                    <div class="col-lg-6">
+                        <input type="text" name="Name" value="@(book.Name)" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="GroupName" class="control-label col-lg-3">申请组</label>
+                    <div class="col-lg-6">
+                        <input type="text" name="GroupName" value="@(book.GroupName)" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Time" class="control-label col-lg-3">申请时间</label>
+                    <div class="col-lg-6">
+                        <input type="text" name="Time" value="@(book.CreateTime)" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Check" class="control-label col-lg-3">是否同意</label>
+                    <div class="col-lg-6">
+                        <label class="radio-inline">
+                            <input type="radio" value="true" name="Check" />同意
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="false" name="Check" />不同意
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Reason" class="control-label col-lg-3">备注（理由）</label>
+                    <div class="col-lg-6">
+                        <textarea name="Reason" class="form-control" style="width:539px;"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="ID" value="@(book.ID)" style="display:none;" />
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-6 col-lg-offset-3">
+                        <input type="submit" class="btn btn-primary" value="确定" />
+                    </div>
+                </div>
+            </form>
+            <hr />
+        }
+    </div>
+    <div class="tab-pane fade" id="Finish">
+        <table class="table table-bordered">
+            <tr>
+                <th>序号</th>
+                <th>申请人</th>
+                <th>申请组</th>
+                <th>申请时间</th>
+                <th>申请状态</th>
+                <th>备注、理由</th>
+            </tr>
+            @foreach (var item in Finishs)
+            {
+                <tr>
+                    <td>@(SeriaNumber++)</td>
+                    <td>@(item.Name)</td>
+                    <td>@(item.GroupName)</td>
+                    <td>@(item.CreateTime)</td>
+                    <td>
+                        @if (item.Check.HasValue)
+                        {
+                            if (item.Check.Value)
+                            {
+                                <i class="glyphicon glyphicon-ok"></i>
+                            }
+                            else
+                            {
+                                <i class="glyphicon glyphicon-remove"></i>
+                            }
+                        }
+                    </td>
+                    <td>@(item.Reason)</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="tab-pane fade" id="Mine">
+        <table class=" table table-bordered">
+            <tr>
+                <th>序号</th>
+                <th>审核人</th>
+                <th>审核时间</th>
+                <th>审核结果</th>
+                <th>备注、理由</th>
+            </tr>
+            @foreach (var item in Mines)
+            {
+                <tr>
+                    <td>@(Serial++)</td>
+                    <td>@(item.Checker)</td>
+                    <td>@(item.CheckTime)</td>
+                    <td>
+                        @if (item.Check.HasValue)
+                        {
+                            if (item.Check.Value)
+                            {
+                                <i class="glyphicon glyphicon-ok"></i>
+                            }
+                            else
+                            {
+                                <i class="glyphicon glyphicon-remove"></i>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @(item.Reason)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

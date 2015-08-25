@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LoowooTech.Jurisdiction.Common
 {
@@ -35,6 +36,11 @@ namespace LoowooTech.Jurisdiction.Common
                 }
             }
             return list;
+        }
+
+        public static bool IsChinese(this string str)
+        {
+            return Regex.IsMatch(str, @"[\u4e00-\u9fa5]");
         }
 
         
