@@ -1,4 +1,5 @@
 ﻿using LoowooTech.Jurisdiction.Common;
+using LoowooTech.Jurisdiction.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 namespace LoowooTech.Jurisdiction.Web.Controllers
 {
     [UserAuthorize]
+    [UserRole(groupType=GroupType.Manager)]
     public class ManagerController : ControllerBase
     {
         //

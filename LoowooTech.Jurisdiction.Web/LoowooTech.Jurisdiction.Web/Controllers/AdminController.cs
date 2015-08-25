@@ -9,6 +9,7 @@ using LoowooTech.Jurisdiction.Models;
 namespace LoowooTech.Jurisdiction.Web.Controllers
 {
     [UserAuthorize]
+    [UserRole(groupType=GroupType.Administrator)]
 
     public class AdminController : ControllerBase
     {
@@ -59,6 +60,12 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         {
             Core.ADManager.Create(group);
             return RedirectToAction("Index");
+        }
+
+
+        public ActionResult Search()
+        {
+            return View();
         }
 
     }

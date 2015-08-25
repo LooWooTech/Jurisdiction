@@ -41,11 +41,16 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
                 throw new ArgumentException("登录失败");
             }
             HttpContext.SaveAuth(Password,user);
-            if (user.Group.Contains("Administrators"))
+            switch (Identity.Type)
             {
-                return Redirect("/Admin/Index");
+                case GroupType.Administrator:
+                    return Redirect("/Admin/Index");
+                case GroupType.Manager:
+                    return Redirect("/Manager/Index");
+                case GroupType.Member:
+                    return Redirect("/Member/Index");
             }
-            return Redirect("/User/Index");
+            return RedirectToAction("Index");
         }
 
         public ActionResult Logout()

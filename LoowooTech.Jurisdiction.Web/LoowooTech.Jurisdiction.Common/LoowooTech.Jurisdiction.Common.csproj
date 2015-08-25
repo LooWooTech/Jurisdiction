@@ -75,6 +75,7 @@
     <Compile Include="UploadHelper.cs" />
     <Compile Include="UserAuthorizeAttribute.cs" />
     <Compile Include="UserPrincipal.cs" />
+    <Compile Include="UserRoleAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
