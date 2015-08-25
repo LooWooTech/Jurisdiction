@@ -22,10 +22,11 @@ namespace LoowooTech.Jurisdiction.Manager
                 {
                     Convert.ToDateTime(str);
                 }
-
+                string Name=Core.ADManager.GetProperty(result, "name");
+                
                 list.Add(new Group
                 {
-                    Name = Core.ADManager.GetProperty(result, "name"),
+                    Name = Name,
                     CreateTime = time,
                     Descriptions = Core.ADManager.GetProperty(result, "description")
                 });

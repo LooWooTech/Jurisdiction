@@ -1,6 +1,10 @@
 ﻿@{
-    ViewBag.Title = "_Layout";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var action = Request.RequestContext.RouteData.Values["action"].ToString();
 }
 
-<h2>_Layout</h2>
+@section nav{
+    <li class="@(action=="Index"?"active":null)"><a href="/Manager/Index"><i class="glyphicon glyphicon-home"></i>&nbsp;首页</a></li>
+    <li class="@(action=="Manager"?"active":null)"><a href="/Manager/Manager"><i class="glyphicon glyphicon"></i>&nbsp;申请中心</a></li>
+}
+@RenderBody()

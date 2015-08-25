@@ -1,6 +1,9 @@
 ﻿@{
-    ViewBag.Title = "ASuccess";
+    ViewBag.Title = "申请权限成功提交";
     Layout = "~/Views/Member/_Layout.cshtml";
+    LoowooTech.Jurisdiction.Models.DataBook book = ViewBag.Book;
 }
-
-<h2>ASuccess</h2>
+<div class="alert alert-success" role="alert">
+    时间：@(book.CreateTime) ,用户：@(book.Name) 向管理者为：@(book.Manager) 管理的组：@(book.GroupName) 申请权限;<br />
+    申请权限已提交，请耐心等待管理者的同意
+</div>
