@@ -14,12 +14,28 @@ namespace LoowooTech.Jurisdiction.Manager
         private User Get(string Name)
         {
             SearchResult searchResult = Core.ADManager.SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", null);
-            return new User()
+            User user = new User()
             {
                 Name = Core.ADManager.GetProperty(searchResult, "sAMAccountName"),
-                Group = Core.ADManager.Tranlate(Core.ADManager.GetAllProperty(searchResult, "memberOf"),"group"),
-                Managers=Core.ADManager.Tranlate(Core.ADManager.GetAllProperty(searchResult,"managedObjects"),"group")
+                Group = Core.ADManager.Tranlate(Core.ADManager.GetAllProperty(searchResult, "memberOf"), "group"),
+                Managers = Core.ADManager.Tranlate(Core.ADManager.GetAllProperty(searchResult, "managedObjects"), "group")
             };
+            if (user.Group.Contains("Administrators"))
+            {
+                user.Type = GroupType.Administrator;
+            }
+            else
+            {
+                if (user.Managers.Count != 0)
+                {
+                    user.Type = GroupType.Manager;
+                }
+                else
+                {
+                    user.Type = GroupType.Member;
+                }
+            }
+            return user;
         }
 
         
@@ -39,17 +55,6 @@ namespace LoowooTech.Jurisdiction.Manager
                 throw new ArgumentException("当前域中不存在改用户或者密码不正确");
             }
             return Get(Name);
-            //DirectoryEntry Admin = Core.ADManager.GetDirectoryObject();
-            //SearchResult searchResult = Core.ADManager.SearchOne("(&(objectClass=user)(cn=" + Name + "))", Admin);
-            //if (searchResult != null)
-            //{
-            //    return new User
-            //    {
-            //        Name = Core.ADManager.GetProperty(searchResult, "cn"),
-            //        Group = Core.ADManager.Tranlate(Core.ADManager.GetAllProperty(searchResult, "memberOf"))
-            //    };
-            //}
-            //return null;
         }
         public void Get(HttpContextBase context)
         {

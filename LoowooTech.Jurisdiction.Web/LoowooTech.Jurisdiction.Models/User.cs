@@ -20,10 +20,19 @@ namespace LoowooTech.Jurisdiction.Models
         /// 隶属组
         /// </summary>
         public List<string> Group { get; set; }
+        public GroupType Type { get; set; }
         /// <summary>
         /// 管理哪些组
         /// </summary>
         public List<string> Managers { get; set; }
 
+    }
+
+
+    public enum GroupType
+    {
+        Administrator,
+        Manager,
+        Member
     }
 }

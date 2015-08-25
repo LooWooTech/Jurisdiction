@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using LoowooTech.Jurisdiction.Common;
 using System.DirectoryServices;
+using LoowooTech.Jurisdiction.Models;
 
 
 namespace LoowooTech.Jurisdiction.Web.Controllers
@@ -18,11 +19,15 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         {
             if (Identity.IsAuthenticated)
             {
-                if (Core.GroupManager.IsAdministrator(Identity.Groups))
+                switch (Identity.Type)
                 {
-                    return Redirect("/Admin/Index");
+                    case GroupType.Administrator:
+                        return Redirect("/Admin/Index");
+                    case GroupType.Manager:
+                        return Redirect("/Manager/Index");
+                    case GroupType.Member:
+                        return Redirect("/Member/Index");
                 }
-                return Redirect("/User/Index");
             }
             return View();
         }

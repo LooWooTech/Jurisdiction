@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoowooTech.Jurisdiction.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace LoowooTech.Jurisdiction.Common
         private const string _cookieName = "Jurisdiction_user";
         public static void SaveAuth(this HttpContextBase context, string Password,LoowooTech.Jurisdiction.Models.User user)
         {
-            var ticket = new FormsAuthenticationTicket(user.Name+ "|" + Password +"|"+StringHelper.ToStr(user.Group), true, 60);
+            var ticket = new FormsAuthenticationTicket(user.Name+ "|" + Password +"|"+StringHelper.ToStr(user.Group)+"|"+user.Type.ToString(), true, 60);
             var cookieValue = FormsAuthentication.Encrypt(ticket);
             var cookie = new HttpCookie(_cookieName, cookieValue);
             context.Response.Cookies.Remove(_cookieName);
@@ -32,14 +33,20 @@ namespace LoowooTech.Jurisdiction.Common
                 if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                 {
                     var values = ticket.Name.Split('|');
-                    if (values.Length == 3)
+                    if (values.Length == 4)
                     {
-                        return new UserIdentity
+                        GroupType Type;
+                        if (Enum.TryParse(values[3], out Type))
                         {
-                            UserName = values[0],
-                            Password=values[1],
-                            Groups=values[2]
-                        };
+                            return new UserIdentity
+                            {
+                                UserName = values[0],
+                                Password = values[1],
+                                Groups = values[2],
+                                Type=Type
+                            };
+                        }   
+                       
                     }
                 }
             }
