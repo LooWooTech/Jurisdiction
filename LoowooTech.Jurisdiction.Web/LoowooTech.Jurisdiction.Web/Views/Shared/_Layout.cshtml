@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/main.css" />
+
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @{
+        string Name = System.Threading.Thread.CurrentPrincipal.Identity.Name;
+    }
+
+    <script>
+        $(function () {
+            $(".btn-danger").click(function () {
+                if (confirm("你确定继续接下来的操作吗？")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">杭州智拓土地规划设计咨询有限公司——权限管理系统</a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav">
+                    @RenderSection("nav", false)
+                    
+                </ul>
+                @if (!string.IsNullOrEmpty(Name))
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-cloud"></i>&nbsp;设置&nbsp;<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/Safe/ChangeCode"><i class="glyphicon glyphicon-cog"></i>&nbsp;密码修改&nbsp;</a></li>
+                                <li><a href="/Home/Logout"><i class="glyphicon glyphicon-user"></i>&nbsp;@(Name)&nbsp;退出</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <br />
+        <div class="panel panel-default" id="main-panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">@(ViewBag.Title)</h3>
+            </div>
+            <div class="panel-body">
+                @RenderBody()
+            </div>
+        </div>
+        <footer style="clear: both; overflow: hidden;">
+            <div class="row">
+                <div class="col-lg-12">
+                    &copy;2015 杭州陆吾科技信息咨询有限公司版权所有
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
