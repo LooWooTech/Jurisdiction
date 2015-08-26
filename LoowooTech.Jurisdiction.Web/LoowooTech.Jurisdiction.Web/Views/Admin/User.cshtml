@@ -1,6 +1,51 @@
 ﻿@{
-    ViewBag.Title = "User";
+    ViewBag.Title = "用户";
     Layout = "~/Views/Admin/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.Group> Groups = ViewBag.Groups;
+    List<LoowooTech.Jurisdiction.Models.User> Users = ViewBag.Users;
+    int SerialNumber = 1;
 }
 
-<h2>User</h2>
+@{
+    Html.RenderPartial("AddUser", Groups);
+    Html.RenderPartial("Search");
+}
+<table class="table table-bordered">
+    <tr>
+        <th>序号</th>
+        <th>姓名</th>
+        <th>用户名</th>
+        <th>过期时间</th>
+        <th>所属组</th>
+        <th>快捷键</th>
+    </tr>
+    @foreach (var user in Users)
+    {
+        <tr>
+            <td>@(SerialNumber++)</td>
+            <td>@(user.Name)</td>
+            <td>@(user.Account)</td>
+            <td></td>
+            <td>
+                @foreach (var str in user.Group)
+                {
+                    @(str + ";");
+                }
+            </td>
+            <td>
+                <a href="/Admin/Delete?Name=@user.Name&&Flag=@(true)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>&nbsp; 删除</a>
+            </td>
+        </tr>
+    }
+</table>
+
+
+
+
+
+
+
+
+
+
+
