@@ -1,6 +1,32 @@
 ﻿@{
-    ViewBag.Title = "Group";
+    ViewBag.Title = "组群";
     Layout = "~/Views/Admin/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.Group> Groups = ViewBag.Groups;
 }
 
-<h2>Group</h2>
+@{
+    Html.RenderPartial("AddGroup");
+    Html.RenderPartial("Search");
+}
+<ul>
+    @foreach (var entry in Groups)
+    {
+        <li  data-container="body" data-toggle="popover" data-placement="right" data-content="@(entry.Descriptions)">
+            @(entry.Name)
+        </li>
+        if (entry.Children != null)
+        {
+            <li>
+
+            </li>
+        }
+    }
+</ul>
+
+
+<script>
+    $(function () {
+        $(".popover").popover("toggle");
+    })
+</script>
+

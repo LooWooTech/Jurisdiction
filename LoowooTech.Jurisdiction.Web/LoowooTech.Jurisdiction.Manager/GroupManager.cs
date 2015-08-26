@@ -39,7 +39,7 @@ namespace LoowooTech.Jurisdiction.Manager
         }
 
 
-        public List<Group> GetListGroupExcept()
+        public List<Group> GetListGroupExcept(string Key)
         {
             List<Group> list = new List<Group>();
             SearchResultCollection collection = Core.ADManager.SearchAll("(&(objectClass=group))", null);
@@ -61,13 +61,31 @@ namespace LoowooTech.Jurisdiction.Manager
                     }
                 }
                 string Name=Core.ADManager.GetProperty(result, "name");
+                
                 if(Name.IsChinese()){
-                    list.Add(new Group
+
+                    if (!string.IsNullOrEmpty(Key))
                     {
-                        Name = Name,
-                        CreateTime = time,
-                        Descriptions = Core.ADManager.GetProperty(result, "description")
-                    });
+                        if (Key == Name)
+                        {
+                            list.Add(new Group
+                            {
+                                Name = Name,
+                                CreateTime = time,
+                                Descriptions = Core.ADManager.GetProperty(result, "description")
+                            });
+                        }
+                    }
+                    else
+                    {
+                        list.Add(new Group
+                        {
+                            Name = Name,
+                            CreateTime = time,
+                            Descriptions = Core.ADManager.GetProperty(result, "description")
+                        });
+                    }
+                    
                 }
               
 

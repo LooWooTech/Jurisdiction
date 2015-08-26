@@ -18,12 +18,7 @@
             Html.RenderPartial("AddUser", Groups);
             
         }
-        <form class="form-inline" style="float:right">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="搜索用户" />
-            </div>
-            <button type="submit" class="btn btn-info">搜索</button>
-        </form>
+        
         <table class="table table-bordered">
             <tr>
                 <th>序号</th>
@@ -57,18 +52,7 @@
         @{
             Html.RenderPartial("AddGroup");
         }
-        <ul>
-            @foreach (var entry in Groups)
-            {
-                <li>@(entry.Name)</li>
-                if (entry.Children != null)
-                {
-                    <li>
-
-                    </li>
-                }
-            }
-        </ul>
+       
        
     </div>
    

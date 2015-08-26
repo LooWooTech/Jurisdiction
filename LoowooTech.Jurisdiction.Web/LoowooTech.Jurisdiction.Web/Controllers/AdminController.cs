@@ -18,7 +18,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.Groups = Core.GroupManager.GetListGroupExcept();
+            ViewBag.Groups = Core.GroupManager.GetListGroupExcept(null);
             ViewBag.Users = Core.ADManager.GetListUser(null);
             return View();
         }
@@ -27,9 +27,9 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         /// 查看当前域中所有的用户
         /// </summary>
         /// <returns></returns>
-        public ActionResult User()
+        public ActionResult User(string Key=null)
         {
-            ViewBag.Users = Core.ADManager.GetListUser(null);
+            ViewBag.Users = Core.ADManager.GetListUser(Key);
             return View();
         }
 
@@ -37,9 +37,9 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         /// 查看当前域中所有的组
         /// </summary>
         /// <returns></returns>
-        public ActionResult Group()
+        public ActionResult Group(string Key=null)
         {
-            ViewBag.Groups = Core.GroupManager.GetListGroupExcept();
+            ViewBag.Groups = Core.GroupManager.GetListGroupExcept(Key);
             return View();
         }
 
@@ -64,21 +64,21 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("User");
         }
 
 
         public ActionResult Delete(string Name,bool Flag)
         { 
             Core.ADManager.Delete(Name,Flag);
-            return RedirectToAction("Index");
+            return Flag ? RedirectToAction("User") : RedirectToAction("Group");
         }
 
         [HttpPost]
         public ActionResult CreateGroup(Group group)
         {
             Core.ADManager.Create(group);
-            return RedirectToAction("Index");
+            return RedirectToAction("Group");
         }
 
 

@@ -3,36 +3,97 @@
     Layout = "~/Views/Member/_Layout.cshtml";
     LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
     List<LoowooTech.Jurisdiction.Models.Group> List = ViewBag.ListGroup;
+    List<LoowooTech.Jurisdiction.Models.DataBook> MList = ViewBag.Mine;
     int SerialNumber = 1;
+    int Serial = 1;
 }
 
-<div class="alert alert-info" role="alert">
-
-    @if (User.Group != null)
-    {
-        <p>当前用户隶属于:</p>
-        foreach (var group in User.Group)
-        {
-            <p>@(SerialNumber++):@(group)</p>
-        }
-    }
+<div style="position:relative">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#Apply" data-toggle="tab"><i class="glyphicon glyphicon-glass"></i>&nbsp;申请中心</a></li>
+        <li class=""><a href="#Mine" data-toggle="tab"><i class="glyphicon glyphicon"></i>&nbsp; 我的申请</a></li>
+    </ul>
 </div>
 
-<form class="form-horizontal" method="post" action="">
-    <div class="form-group">
-        <label for="" class="control-label col-lg-3">申请组：</label>
-        <div class="col-lg-8">
-            @foreach (var group in List)
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="Apply">
+        <div class="alert alert-info" role="alert">
+
+            @if (User.Group != null)
             {
-                <label class="radio">
-                    <input type="radio" name="GroupName" value="@(group.Name)" />@(group.Name)——@(group.Descriptions)
-                </label>
+                <p>当前用户隶属于:</p>
+                foreach (var group in User.Group)
+                {
+                    <p>@(SerialNumber++):@(group)</p>
+                }
             }
         </div>
+
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label for="" class="control-label col-lg-3">申请组：</label>
+                <div class="col-lg-8">
+                    @foreach (var group in List)
+                    {
+                        <label class="radio">
+                            <input type="radio" name="GroupName" value="@(group.Name)" />@(group.Name)——@(group.Descriptions)
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-8 col-lg-offset-3">
+                    <input type="submit" class="btn btn-primary" value="申请" />
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <div class="col-lg-8 col-lg-offset-3">
-            <input type="submit" class="btn btn-primary" value="申请" />
-        </div>
+
+
+    <div class="tab-pane fade" id="Mine">
+        <table class="table table-bordered">
+            <tr>
+                <th>序号</th>
+                <th>申请组名</th>
+                <th>申请时间</th>
+                <th>组管理者</th>
+                <th>审核状态</th>
+                <th>审核人</th>
+                <th>审核时间</th>
+            </tr>
+            @foreach (var item in MList)
+            {
+                <tr>
+                    <td>@(Serial++)</td>
+                    <td>@(item.GroupName)</td>
+                    <td>@(item.CreateTime)</td>
+                    <td>@(item.Manager)</td>
+                    @if (item.Check.HasValue)
+                    {
+                        if (item.Check.Value)
+                        {
+                            <td><span class="glyphicon glyphicon-ok-sign">审核通过</span></td>
+                            
+                        }
+                        else
+                        {
+                            <td><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
+                            
+                        }
+                        <td>@(item.Checker)</td>
+                        <td>@(item.CheckTime)</td>
+                    }
+                    else
+                    {
+                        <td><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        
+                    }
+                </tr>
+            }
+        </table>
     </div>
-</form>
+</div>
+
+
