@@ -10,6 +10,7 @@
     Html.RenderPartial("AddUser", Groups);
     Html.RenderPartial("Search");
 }
+
 <table class="table table-bordered">
     <tr>
         <th>序号</th>
@@ -17,7 +18,7 @@
         <th>用户名</th>
         <th>过期时间</th>
         <th>所属组</th>
-        <th>快捷键</th>
+        <th>编辑</th>
     </tr>
     @foreach (var user in Users)
     {
@@ -32,11 +33,12 @@
                     @(str + ";");
                 }
             </td>
-            <td>
+            <td> 
+                <a class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp;修改</a>
                 <a href="/Admin/Delete?Name=@user.Name&&Flag=@(true)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>&nbsp; 删除</a>
             </td>
         </tr>
-    }
+    }   
 </table>
 
 
