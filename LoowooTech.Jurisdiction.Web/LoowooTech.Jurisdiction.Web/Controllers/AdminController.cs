@@ -81,6 +81,29 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             return RedirectToAction("Group");
         }
 
+        /// <summary>
+        /// 管理员查看申请权限记录以及进行审核
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Manager()
+        {
+            ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
+            //待审批列表
+            ViewBag.List = Core.DataBookManager.GetWait(Identity);
+            //审批列表
+            ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
+            //我的申请
+            ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
+            return View();
+        }
+        
+        [HttpPost]
+        public ActionResult Manager(int iD, string Reason, bool? Check)
+        {
+            Core.DataBookManager.Check(iD, Reason, Identity.Name, Check);
+            return View();
+        }
+
 
     }
 }
