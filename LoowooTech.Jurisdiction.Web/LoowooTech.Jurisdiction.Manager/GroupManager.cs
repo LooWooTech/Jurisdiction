@@ -10,88 +10,10 @@ namespace LoowooTech.Jurisdiction.Manager
 {
     public class GroupManager:ManagerBase
     {
-        public List<Group> GetListGroup()
-        {
-            List<Group> list = new List<Group>();
-            SearchResultCollection collection = Core.ADManager.SearchAll("(&(objectClass=group))", null);
-            foreach (SearchResult result in collection)
-            {
-                string str = Core.ADManager.GetProperty(result, "createTimeStamp");
-                DateTime time = DateTime.Now;
-                if (!string.IsNullOrEmpty(str))
-                {
-                    Convert.ToDateTime(str);
-                }
-                string Name=Core.ADManager.GetProperty(result, "name");
-                if (Name.IsChinese())
-                {
-                    list.Add(new Group
-                    {
-                        Name = Name,
-                        CreateTime = time,
-                        Descriptions = Core.ADManager.GetProperty(result, "description")
-                    });
-                }
-                
-               
-            }
-            return list;
-        }
+       
 
 
-        public List<Group> GetListGroupExcept(string Key)
-        {
-            List<Group> list = new List<Group>();
-            SearchResultCollection collection = Core.ADManager.SearchAll("(&(objectClass=group))", null);
-            foreach (SearchResult result in collection)
-            {
-                string str = Core.ADManager.GetProperty(result, "createTimeStamp");
-                DateTime time = DateTime.Now;
-                if (!string.IsNullOrEmpty(str))
-                {
-                    Convert.ToDateTime(Core.ADManager.GetProperty(result, "createTimeStamp"));
-                }
-                string distinguishedName = Core.ADManager.GetProperty(result, "distinguishedName");
-                if (!string.IsNullOrEmpty(distinguishedName))
-                {
-                    string cn = distinguishedName.Extract(1);
-                    if (cn == "Builtin")
-                    {
-                        continue;
-                    }
-                }
-                string Name=Core.ADManager.GetProperty(result, "name");
-                
-                if(Name.IsChinese()){
-
-                    if (!string.IsNullOrEmpty(Key))
-                    {
-                        if (Key == Name)
-                        {
-                            list.Add(new Group
-                            {
-                                Name = Name,
-                                CreateTime = time,
-                                Descriptions = Core.ADManager.GetProperty(result, "description")
-                            });
-                        }
-                    }
-                    else
-                    {
-                        list.Add(new Group
-                        {
-                            Name = Name,
-                            CreateTime = time,
-                            Descriptions = Core.ADManager.GetProperty(result, "description")
-                        });
-                    }
-                    
-                }
-              
-
-            }
-            return list;
-        }
+        
 
         public string GetAdministrator(string GroupName)
         {

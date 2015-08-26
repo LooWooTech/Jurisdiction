@@ -16,6 +16,7 @@ namespace LoowooTech.Jurisdiction.Models
         /// 账号
         /// </summary>
         public string Account { get; set; }
+        public string AccountExpires { get; set; }
         /// <summary>
         /// 隶属组
         /// </summary>

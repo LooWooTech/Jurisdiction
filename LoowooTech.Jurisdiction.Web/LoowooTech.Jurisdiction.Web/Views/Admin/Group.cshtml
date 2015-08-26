@@ -1,32 +1,33 @@
 ﻿@{
     ViewBag.Title = "组群";
     Layout = "~/Views/Admin/_Layout.cshtml";
-    List<LoowooTech.Jurisdiction.Models.Group> Groups = ViewBag.Groups;
+    Dictionary<string, List<string>> DICT = ViewBag.DICT;
+    List<string> List = ViewBag.List;
 }
 
 @{
-    Html.RenderPartial("AddGroup");
+    Html.RenderPartial("AddGroup",List);
+    Html.RenderPartial("AddUserGroup");
     Html.RenderPartial("Search");
 }
-<ul>
-    @foreach (var entry in Groups)
-    {
-        <li  data-container="body" data-toggle="popover" data-placement="right" data-content="@(entry.Descriptions)">
-            @(entry.Name)
-        </li>
-        if (entry.Children != null)
-        {
-            <li>
 
-            </li>
-        }
+<hr />
+<ul>
+    @foreach (var key in DICT.Keys)
+    {
+        <li>
+            @(key)
+            @{
+                var list = DICT[key];
+                <ul>
+                    @foreach (var item in list)
+                    {
+                        <li>@(item)</li>
+                    }
+                </ul>
+            }
+        </li>
     }
 </ul>
 
-
-<script>
-    $(function () {
-        $(".popover").popover("toggle");
-    })
-</script>
 

@@ -1,4 +1,5 @@
 ﻿using LoowooTech.Jurisdiction.Models;
+using LoowooTech.Jurisdiction.Common;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -10,6 +11,12 @@ namespace LoowooTech.Jurisdiction.Manager
 
     public partial class ADManager
     {
+        /// <summary>
+        /// 通过用户名以及密码获取用户DirectoryEntry
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Password"></param>
+        /// <returns></returns>
         public DirectoryEntry GetUser(string Name, string Password)
         {
             DirectoryEntry user = null;
@@ -22,17 +29,21 @@ namespace LoowooTech.Jurisdiction.Manager
 
             return user;
         }
-
+        /// <summary>
+        /// 通过用户名获取DirectoryEntry
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns></returns>
         public DirectoryEntry GetUser(string Name)
         {
             return Get("(&(objectCategory=person)(objectClass=user)(cn=" + Name + "))");
-            //SearchResult searchResult = SearchOne("(&(objectCategory=person)(objectClass=user)(cn=" + Name + "))", null);
-            //if (searchResult != null)
-            //{
-            //    return new DirectoryEntry(searchResult.Path, ADName, ADPassword, AuthenticationTypes.Secure);
-            //}
-            //return null;
         }
+
+        /// <summary>
+        /// 获取用户列表（可通过关键字搜素）
+        /// </summary>
+        /// <param name="Key">关键字</param>
+        /// <returns></returns>
         public List<User> GetListUser(string Key)
         {
             List<User> list = new List<User>();
@@ -42,6 +53,21 @@ namespace LoowooTech.Jurisdiction.Manager
                 string Name = GetProperty(result, "cn");
                 string Account = GetProperty(result, "sAMAccountName");
                 List<string> Groups = Tranlate(GetAllProperty(result, "memberOf"),"group");
+                long accountExpires ;
+                string Expires=GetProperty(result, "accountExpires");
+                if (long.TryParse(Expires, out accountExpires))
+                {
+                    try
+                    {
+                        Expires = DateTime.FromFileTime(accountExpires).ToString();
+                    }
+                    catch
+                    {
+                        Expires = "从不";
+                    }
+                    
+                }
+
                 if (!string.IsNullOrEmpty(Key))
                 {
                     if (Name == Key || Account == Key)
@@ -50,7 +76,8 @@ namespace LoowooTech.Jurisdiction.Manager
                         {
                             Name = Name,
                             Account = Account,
-                            Group = Groups
+                            Group = Groups,
+                            AccountExpires=Expires
                         });
                     }
                 }
@@ -60,13 +87,21 @@ namespace LoowooTech.Jurisdiction.Manager
                     {
                         Name = Name,
                         Account = Account,
-                        Group = Groups
+                        Group = Groups,
+                        AccountExpires=Expires
                     });
                 }
                
             }
             return list;
         }
+        /// <summary>
+        /// 设置密码
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="OldPassword"></param>
+        /// <param name="NewPassword"></param>
+        /// <param name="Message"></param>
         public void SetUserPassword(string Name, string OldPassword, string NewPassword, out string Message)
         {
             DirectoryEntry Entry = GetUser(Name, OldPassword);
@@ -87,6 +122,11 @@ namespace LoowooTech.Jurisdiction.Manager
             }
         }
 
+        /// <summary>
+        /// 将用户添加到组
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="GroupName"></param>
         public void AddUserToGroup(string Name, string GroupName)
         {
             string value = GetDistinguishedName(Name);
@@ -104,22 +144,40 @@ namespace LoowooTech.Jurisdiction.Manager
             Group.Close();
         }
 
+        /// <summary>
+        /// 添加用户
+        /// </summary>
+        /// <param name="AdUser"></param>
         public void Create(AUser AdUser)
         {
-            DirectoryEntry UserGroup = Get("(&(cn=Users))");
+            DirectoryEntry UserGroup = Get("(&(OU="+AdUser.Orginzation+"))");
             if (UserGroup == null)
             {
                 throw new ArgumentException("未找到创建用户的组织单元");
             }
             DirectoryEntry user = UserGroup.Children.Add("CN=" + AdUser.Initial, "user");
+            UserGroup.Close();
             user.Properties["sAMAccountName"].Value = AdUser.sAMAccountName;
             user.Properties["sn"].Value = AdUser.Sn;
             user.Properties["givenName"].Value = AdUser.GivenName;
+            if (AdUser.Day != 0 || AdUser.Month != 0 || AdUser.Year != 0)
+            {
+                if (user.Properties.Contains("accountExpires"))
+                {
+                    user.Properties["accountExpires"].Value = DateTime.Now.ToString();
+                }
+            }
+            
             user.CommitChanges();
             user.Close();
-            UserGroup.Close();
+            
         }
 
+        /// <summary>
+        /// 删除用户、组
+        /// </summary>
+        /// <param name="Name">删除的用户名或者组名</param>
+        /// <param name="Flag">区分用户和组</param>
         public void Delete(string Name,bool Flag)
         {
             DirectoryEntry entry = null;

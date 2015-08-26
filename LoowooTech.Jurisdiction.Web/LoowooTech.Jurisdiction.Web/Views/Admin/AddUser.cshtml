@@ -60,10 +60,10 @@
                     <div class="form-group">
                         <label for="Group" class="control-label col-lg-3">隶属于：</label>
                         <div class="col-lg-8">
-                            <select class="form-control">
+                            <select class="form-control"name="Orginzation">
                                 @foreach (var entry in Model)
                                 {
-                                   <option name="Group">@(entry)</option>
+                                   <option value="@(entry)">@(entry)</option>
                                 }
                             </select>
                            

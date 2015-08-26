@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -23,6 +24,8 @@ namespace LoowooTech.Jurisdiction.Models
         /// 账户名
         /// </summary>
         public string sAMAccountName { get; set; }
+        public bool Flag { get; set; }
+        public string Orginzation { get; set; }
         /// <summary>
         /// 主要设置账户使用期限
         /// </summary>
@@ -34,7 +37,11 @@ namespace LoowooTech.Jurisdiction.Models
 
     public enum Category
     {
-        Group,
-        User
+        [Description("组")]
+        group,
+        [Description("用户")]
+        user,
+        [Description("组织单元")]
+        organizationalUnit
     }
 }

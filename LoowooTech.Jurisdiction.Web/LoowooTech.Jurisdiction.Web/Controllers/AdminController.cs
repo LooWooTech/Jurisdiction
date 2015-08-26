@@ -18,7 +18,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.Groups = Core.GroupManager.GetListGroupExcept(null);
+            ViewBag.Groups = Core.ADManager.GetListGroupExcept(null);
             ViewBag.Users = Core.ADManager.GetListUser(null);
             return View();
         }
@@ -27,7 +27,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         /// 查看当前域中所有的用户
         /// </summary>
         /// <returns></returns>
-        public ActionResult User(string Key=null)
+        public  ActionResult  User(string Key=null)
         {
             ViewBag.Users = Core.ADManager.GetListUser(Key);
             ViewBag.Organization = Core.ADManager.GetOrganizations("内部人员");
@@ -40,7 +40,10 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         /// <returns></returns>
         public ActionResult Group(string Key=null)
         {
-            ViewBag.Groups = Core.GroupManager.GetListGroupExcept(Key);
+            ViewBag.DICT = Core.ADManager.Gain();
+            var list = Core.ADManager.GetAllOrganization();
+            list.Remove("内部人员");
+            ViewBag.List = list;
             return View();
         }
 
@@ -55,11 +58,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             try
             {
                 Core.ADManager.Create(AdUser);
-                string[] groups = HttpContext.GetValue("Group");
-                foreach (var item in groups)
-                {
-                    Core.ADManager.AddUserToGroup(AdUser.sAMAccountName, item);
-                }
             }
             catch (Exception ex)
             {
@@ -76,9 +74,9 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateGroup(Group group)
+        public ActionResult CreateGroup(Group group,string Position,Category category)
         {
-            Core.ADManager.Create(group);
+            Core.ADManager.Create(group,Position,category);
             return RedirectToAction("Group");
         }
 
@@ -103,6 +101,20 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         {
             Core.DataBookManager.Check(ID, Reason, Identity.Name, Check);
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateUserGroup(string Name,string Description)
+        {
+            try
+            {
+                Core.ADManager.AddUserGroup(Name,Description);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            return RedirectToAction("Group");
         }
 
 

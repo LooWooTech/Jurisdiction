@@ -1,4 +1,7 @@
-﻿<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#AddGroup"><i class="glyphicon glyphicon-plus"></i>&nbsp;添加组</button>
+﻿@using LoowooTech.Jurisdiction.Models
+@using LoowooTech.Jurisdiction.Common
+@model IEnumerable<string>
+<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#AddGroup"><i class="glyphicon glyphicon-plus"></i>&nbsp;添加组</button>
 <div class="modal fade" id="AddGroup" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -15,9 +18,39 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="category" class="control-label col-lg-3">类型：</label>
+                        <div class="col-lg-6">
+                            @foreach (Category category in Enum.GetValues(typeof(Category)))
+                            {
+                                int key=(int)category;
+                                if (category == Category.user)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    <label class="radio-inline">
+                                        <input type="radio" name="category" value="@(key)" />@(category.GetDescription())
+                                    </label>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Position" class="control-label col-lg-3">隶属于：</label>
+                        <div class="col-lg-6">
+                            <select name="Position" class="form-control">
+                                @foreach (var item in Model)
+                                {
+                                    <option value="@(item)">@(item)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="descriptions" class="control-label col-lg-3">描述：</label>
                         <div class="col-lg-6">
-                            <textarea name="descriptions" class="form-control"></textarea>
+                            <textarea name="descriptions" class="form-control" style="height:200px;"></textarea>
                         </div>
                     </div>
                 </div>

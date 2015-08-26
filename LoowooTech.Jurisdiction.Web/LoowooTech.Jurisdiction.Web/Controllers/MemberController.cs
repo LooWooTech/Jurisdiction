@@ -27,7 +27,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public ActionResult Apply()
         {
             ViewBag.User = Core.UserManager.Get(Identity);
-            ViewBag.ListGroup = Core.GroupManager.GetListGroup();
+            ViewBag.ListGroup = Core.ADManager.GetListGroup();
             ViewBag.Mine = Core.DataBookManager.GetMine(Identity.Name);
             return View();
         }

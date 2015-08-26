@@ -56,9 +56,5 @@ namespace LoowooTech.Jurisdiction.Manager
             }
             return Get(Name);
         }
-        public void Get(HttpContextBase context)
-        {
-            //if(context.Request.Form[""])
-        }
     }
 }
