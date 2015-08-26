@@ -1,13 +1,13 @@
 ﻿@{
     ViewBag.Title = "用户";
     Layout = "~/Views/Admin/_Layout.cshtml";
-    List<LoowooTech.Jurisdiction.Models.Group> Groups = ViewBag.Groups;
+    List<string> Organizations = ViewBag.Organization;
     List<LoowooTech.Jurisdiction.Models.User> Users = ViewBag.Users;
     int SerialNumber = 1;
 }
 
 @{
-    Html.RenderPartial("AddUser", Groups);
+    Html.RenderPartial("AddUser", Organizations);
     Html.RenderPartial("Search");
 }
 

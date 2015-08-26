@@ -143,13 +143,6 @@ namespace LoowooTech.Jurisdiction.Manager
         public string GetDistinguishedName(string Name)
         {
             return GetPropertyValueByName(Name, "distinguishedName");
-            //string value = string.Empty;
-            //SearchResult searchResult = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", null);
-            //if (searchResult != null)
-            //{
-            //    value = GetProperty(searchResult, "distinguishedName");
-            //}
-            //return value;
         }
         /// <summary>
         /// 获得属性cn的值

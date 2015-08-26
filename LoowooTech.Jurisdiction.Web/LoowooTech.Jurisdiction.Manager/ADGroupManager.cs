@@ -1,4 +1,5 @@
 ﻿using LoowooTech.Jurisdiction.Models;
+using LoowooTech.Jurisdiction.Common;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -12,13 +13,6 @@ namespace LoowooTech.Jurisdiction.Manager
         public DirectoryEntry GetGroup(string GroupName)
         {
             return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
-            //DirectoryEntry Group = null;
-            //SearchResult searchResult = SearchOne("(&(objectClass=group)(cn=" + GroupName + "))", null);
-            //if (searchResult != null)
-            //{
-            //    Group = new DirectoryEntry(searchResult.Path, ADName, ADPassword, AuthenticationTypes.Secure);
-            //}
-            //return Group;
         }
 
         public void Create(Group group)
@@ -34,14 +28,12 @@ namespace LoowooTech.Jurisdiction.Manager
             groupEntry.Close();
             Entry.Close();
         }
-
-
-
+        
 
         public List<Group> GetListGroup()
         {
             List<Group> list = new List<Group>();
-            SearchResultCollection collection = SearchAll("(&(objectCategory=group))", null);
+            SearchResultCollection collection = SearchAll("(&(objectCategory=group)(objectClass=group))", null);
             foreach (SearchResult result in collection)
             {
                 string str = GetProperty(result, "createTimeStamp");
@@ -50,26 +42,25 @@ namespace LoowooTech.Jurisdiction.Manager
                 {
                     Convert.ToDateTime(str);
                 }
-                Group group = new Group()
-                {
-                    Name = GetProperty(result, "name"),
-                    CreateTime = time,
-                    Descriptions = GetProperty(result, "description")
-                };
 
+                string Name = GetProperty(result, "name");
+                if (Name.IsChinese())
+                {
+                    list.Add(new Group()
+                    {
+                        Name = Name,
+                        CreateTime = time,
+                        Descriptions = GetProperty(result, "description"),
+                        Ou = GetProperty(result, "ou")
+                    });
+                }
             }
             return list;
         }
 
-        public List<Group> GetListGroup(List<string> origin)
+        public List<Group> GetListGroupByKey(string OU)
         {
-            if (origin == null)
-            {
-                return null;
-            }
-            
-            List<Group> list = new List<Group>();
-            return list;
+            return GetListGroup().Where(e => e.Ou == OU).ToList();
         }
     }
 }

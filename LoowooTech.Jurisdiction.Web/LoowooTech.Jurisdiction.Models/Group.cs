@@ -11,6 +11,7 @@ namespace LoowooTech.Jurisdiction.Models
         public string Name { get; set; }
         public DateTime CreateTime { get; set; }
         public string Descriptions { get; set; }
+        public string Ou { get; set; }
         public List<Group> Children { get; set; }
     }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LoowooTech.Jurisdiction.Models.Group>
+﻿@model IEnumerable<string>
 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#AddUser"><i class="glyphicon glyphicon-plus"></i>&nbsp;添加用户&nbsp;</button>
 <div class="modal fade" id="AddUser" tabindex="-1" role="document">
     <div class="modal-dialog">
@@ -11,37 +11,62 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="sn" class="control-label col-lg-3">姓：</label>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <input type="text" name="Sn" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="givenName" class="control-label col-lg-3">名：</label>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <input type="text" name="GivenName" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="initial" class="control-label col-lg-3">缩写：</label>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <input type="text" name="Initial" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="sAMAccountName" class="control-label col-lg-3">登录名：</label>
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <input type="text" name="sAMAccountName" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="" class="control-label col-lg-3">是否永不过期:</label>
+                        <div class="col-lg-8">
+                            <label class="radio-inline">
+                                <input type="radio" name="Flag" value="True" />是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="Flag" value="False" />否
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="control-label col-lg-3">期限:</label>
+                        <div class="col-lg-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="Year" />
+                                <div class="input-group-addon">年</div>
+                                <input type="text" class="form-control" name="Month" />
+                                <div class="input-group-addon">月</div>
+                                <input type="text" class="form-control" name="Day" />
+                                <div class="input-group-addon">天</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="Group" class="control-label col-lg-3">隶属于：</label>
-                        <div class="col-lg-6">
-                            @foreach (var entry in Model)
-                            {
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" name="Group" value="@(entry.Name)" />@(entry.Name)
-                                </label>
-                            }
+                        <div class="col-lg-8">
+                            <select class="form-control">
+                                @foreach (var entry in Model)
+                                {
+                                   <option name="Group">@(entry)</option>
+                                }
+                            </select>
+                           
                         </div>
                     </div>
                 </div>

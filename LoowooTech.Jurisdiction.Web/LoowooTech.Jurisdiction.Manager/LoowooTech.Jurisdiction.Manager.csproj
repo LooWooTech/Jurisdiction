@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="ADGroupManager.cs" />
     <Compile Include="ADManager.cs" />
+    <Compile Include="ADOrganizationManager.cs" />
     <Compile Include="ADUserManager.cs" />
     <Compile Include="AUserManager.cs" />
     <Compile Include="DataBookManager.cs" />
