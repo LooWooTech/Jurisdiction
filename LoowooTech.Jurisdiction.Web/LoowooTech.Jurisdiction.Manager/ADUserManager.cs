@@ -33,7 +33,7 @@ namespace LoowooTech.Jurisdiction.Manager
             //}
             //return null;
         }
-        public List<User> GetListUser()
+        public List<User> GetListUser(string Key)
         {
             List<User> list = new List<User>();
             SearchResultCollection collection = SearchAll("(&(objectCategory=person)(objectClass=user))", null);
@@ -42,12 +42,28 @@ namespace LoowooTech.Jurisdiction.Manager
                 string Name = GetProperty(result, "cn");
                 string Account = GetProperty(result, "sAMAccountName");
                 List<string> Groups = Tranlate(GetAllProperty(result, "memberOf"),"group");
-                list.Add(new User
+                if (!string.IsNullOrEmpty(Key))
                 {
-                    Name = Name,
-                    Account = Account,
-                    Group = Groups
-                });
+                    if (Name == Key || Account == Key)
+                    {
+                        list.Add(new User
+                        {
+                            Name = Name,
+                            Account = Account,
+                            Group = Groups
+                        });
+                    }
+                }
+                else
+                {
+                    list.Add(new User
+                    {
+                        Name = Name,
+                        Account = Account,
+                        Group = Groups
+                    });
+                }
+               
             }
             return list;
         }
@@ -125,6 +141,7 @@ namespace LoowooTech.Jurisdiction.Manager
             parent.CommitChanges();
             parent.Close();
         }
+
 
     }
 

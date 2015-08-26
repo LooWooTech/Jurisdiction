@@ -13,4 +13,10 @@ namespace LoowooTech.Jurisdiction.Models
         public string sAMAccountName { get; set; }
 
     }
+
+    public enum Category
+    {
+        Group,
+        User
+    }
 }

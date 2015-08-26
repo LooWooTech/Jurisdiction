@@ -19,10 +19,29 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public ActionResult Index()
         {
             ViewBag.Groups = Core.GroupManager.GetListGroupExcept();
-            ViewBag.Users = Core.ADManager.GetListUser();
+            ViewBag.Users = Core.ADManager.GetListUser(null);
             return View();
         }
 
+        /// <summary>
+        /// 查看当前域中所有的用户
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult User()
+        {
+            ViewBag.Users = Core.ADManager.GetListUser(null);
+            return View();
+        }
+
+        /// <summary>
+        /// 查看当前域中所有的组
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Group()
+        {
+            ViewBag.Groups = Core.GroupManager.GetListGroupExcept();
+            return View();
+        }
 
 
         [HttpPost]
@@ -62,11 +81,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             return RedirectToAction("Index");
         }
 
-
-        public ActionResult Search()
-        {
-            return View();
-        }
 
     }
 }
