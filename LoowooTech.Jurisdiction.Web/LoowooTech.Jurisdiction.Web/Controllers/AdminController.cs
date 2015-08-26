@@ -30,6 +30,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public ActionResult User(string Key=null)
         {
             ViewBag.Users = Core.ADManager.GetListUser(Key);
+            ViewBag.Groups = Core.GroupManager.GetListGroupExcept(null);
             return View();
         }
 
@@ -98,9 +99,9 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         }
         
         [HttpPost]
-        public ActionResult Manager(int iD, string Reason, bool? Check)
+        public ActionResult Manager(int ID, string Reason, bool? Check)
         {
-            Core.DataBookManager.Check(iD, Reason, Identity.Name, Check);
+            Core.DataBookManager.Check(ID, Reason, Identity.Name, Check);
             return View();
         }
 
