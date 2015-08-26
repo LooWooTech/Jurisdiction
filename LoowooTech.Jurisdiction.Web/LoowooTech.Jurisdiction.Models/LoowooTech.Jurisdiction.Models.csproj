@@ -51,6 +51,7 @@
     <Compile Include="AUser.cs" />
     <Compile Include="DataBook.cs" />
     <Compile Include="Group.cs" />
+    <Compile Include="NullableFilter.cs" />
     <Compile Include="ObjectClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
