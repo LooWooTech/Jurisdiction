@@ -13,32 +13,32 @@
 
 <table class="table table-bordered">
     <tr>
-        <th>序号</th>
-        <th>姓名</th>
-        <th>用户名</th>
-        <th>过期时间</th>
-        <th>所属组</th>
-        <th>编辑</th>
+        <th style="text-align:center;font-size:larger; width: 55px">序号</th>
+        <th style="text-align:center;font-size:larger">姓名</th>
+        <th style="text-align:center;font-size:larger">用户名</th>
+        <th style="text-align:center;font-size:larger; width: 110px">过期时间</th>
+        <th style="text-align:center;font-size:larger">所属组</th>
+        <th style="text-align:center;font-size:larger; width: 135px">编辑</th>
     </tr>
     @foreach (var user in Users)
-    {
-        <tr>
-            <td>@(SerialNumber++)</td>
-            <td>@(user.Name)</td>
-            <td>@(user.Account)</td>
-            <td></td>
-            <td>
-                @foreach (var str in user.Group)
-                {
-                    @(str + ";");
-                }
-            </td>
-            <td> 
-                <a class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp;修改</a>
-                <a href="/Admin/Delete?Name=@user.Name&&Flag=@(true)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>&nbsp; 删除</a>
-            </td>
-        </tr>
-    }   
+{
+    <tr style="text-align:center">
+        <td>@(SerialNumber++)</td>
+        <td>@(user.Name)</td>
+        <td>@(user.Account)</td>
+        <td></td>
+        <td>
+            @foreach (var str in user.Group)
+            {
+                @(str + ";");
+            }
+        </td>
+        <td>
+            <a class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp;修改</a>
+            <a href="/Admin/Delete?Name=@user.Name&&Flag=@(true)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>&nbsp; 删除</a>
+        </td>
+    </tr>
+}   
 </table>
 
 
