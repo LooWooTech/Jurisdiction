@@ -149,7 +149,6 @@
     <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\MemberController.cs" />
     <Compile Include="Controllers\SafeController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -227,31 +226,13 @@
     <Content Include="Views\Admin\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\User\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\User\_Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\User\Apply.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Safe\ChangeCode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Safe\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\User\ASuccess.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Safe\Message.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Admin\AddUser.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\User\Manager.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Admin\AddGroup.cshtml" />
