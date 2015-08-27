@@ -7,6 +7,10 @@ namespace LoowooTech.Jurisdiction.Models
 {
     public class Group
     {
+        public Group()
+        {
+            Children = new List<Group>();
+        }
         public int ID { get; set; }
         public string Name { get; set; }
         public DateTime CreateTime { get; set; }

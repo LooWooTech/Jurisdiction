@@ -28,9 +28,11 @@ namespace LoowooTech.Jurisdiction.Manager
                 var entry = db.DataBooks.Find(Book.ID);
                 if (entry != null)
                 {
-                    entry.Reason = Book.Reason;
-                    entry.Checker = Book.Checker;
-                    entry.Check = Book.Check;
+                    //entry.Reason = Book.Reason;
+                    //entry.Checker = Book.Checker;
+                    //entry.Check = Book.Check;
+                    Book.ID=entry.ID;
+                    db.Entry(entry).CurrentValues.SetValues(Book);
                     db.SaveChanges();
                 }
             }
@@ -94,7 +96,7 @@ namespace LoowooTech.Jurisdiction.Manager
 
         
 
-        public void Check(int ID, string Reason,string Checker, bool? Check)
+        public void Check(int ID, string Reason,string Checker, bool? Check,int? Day,int? Month,int ?Year)
         {
             if (!Check.HasValue||string.IsNullOrEmpty(Checker))
             {
@@ -120,6 +122,9 @@ namespace LoowooTech.Jurisdiction.Manager
             Book.Reason = Reason;
             Book.Check = Check;
             Book.CheckTime = DateTime.Now;
+            Book.Day = Day;
+            Book.Month = Month;
+            Book.Year = Year;
             try
             {
                 Edit(Book);
@@ -131,6 +136,26 @@ namespace LoowooTech.Jurisdiction.Manager
            
 
 
+        }
+
+        public void Examine(string Name,out string error)
+        {
+            var list = GetMine(Name);
+            error = string.Empty;
+            foreach (var item in list)
+            {
+                if (item.Span.Days < 0 || item.Span.Hours < 0 || item.Span.Minutes < 0 || item.Span.Seconds < 0)
+                {
+                    try
+                    {
+                        Core.ADManager.DeleteUserFromGroup(item.Name, item.GroupName);
+                    }
+                    catch (Exception ex)
+                    {
+                        error += ex.Message;
+                    }
+                }
+            }
         }
     }
 }

@@ -4,13 +4,16 @@
     List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.List;
     List<LoowooTech.Jurisdiction.Models.DataBook> Finishs = ViewBag.Finishs;
     List<LoowooTech.Jurisdiction.Models.DataBook> Mines = ViewBag.Mines;
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.User>> DICT = ViewBag.DICT;
     int SeriaNumber = 1;
     int Serial = 1;
+    int Number = 1;
 }
 
 <div style="position:relative;">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#Wait" data-toggle="tab"><i class="glyphicon glyphicon-fire"></i>&nbsp;待审核&nbsp;</a></li>
+        <li class=""><a href="#Manager" data-toggle="tab"><i class="glyphicon glyphicon-heart"></i>&nbsp; 我的管理&nbsp;</a></li>
         <li class=""><a href="#Finish" data-toggle="tab"><i class="glyphicon glyphicon-leaf"></i>&nbsp;已审核&nbsp;</a></li>
         <li class=""><a href="#Mine" data-toggle="tab"><i class="glyphicon glyphicon-bookmark"></i>&nbsp;我的申请&nbsp;</a></li>
     </ul>
@@ -21,7 +24,7 @@
     <div class="tab-pane fade active in" id="Wait">
         @foreach (var book in List)
         {
-            <form class="form-horizontal" action="/Safe/Message" method="post">
+            <form class="form-horizontal" action="/Manager/Manager" method="post">
                 <div class="form-group">
                     <label for="Name" class="control-label col-lg-3">申请人</label>
                     <div class="col-lg-6">
@@ -52,6 +55,19 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="" class="control-label col-lg-3">期限:</label>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="Year" />
+                            <div class="input-group-addon">年</div>
+                            <input type="text" class="form-control" name="Month" />
+                            <div class="input-group-addon">月</div>
+                            <input type="text" class="form-control" name="Day" />
+                            <div class="input-group-addon">天</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="Reason" class="control-label col-lg-3">备注（理由）</label>
                     <div class="col-lg-6">
                         <textarea name="Reason" class="form-control" style="width:539px;"></textarea>
@@ -67,6 +83,28 @@
                 </div>
             </form>
             <hr />
+        }
+    </div>
+    <div class="tab-pane fade" id="Manager">
+        @foreach (var GroupName in DICT.Keys)
+        {
+            <h3>@(GroupName)</h3>
+            <hr />
+            {
+            Number = 1;
+            }
+            <table class="table table-bordered">
+                @foreach (var user in DICT[GroupName])
+                {
+                    <tr>
+                        <td>@(Number++)</td>
+                        <td>@(user.Name)</td>
+                        <td>@(user.Account)</td>
+                        <td>@(user.AccountExpires)</td>
+                    </tr>
+                }
+                
+            </table>
         }
     </div>
     <div class="tab-pane fade" id="Finish">

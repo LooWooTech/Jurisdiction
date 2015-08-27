@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Composes>
+  <Compose Name="Builtin"></Compose>
+  <Compose Name="Computers"></Compose>
+  <Compose Name="Domain Controllers"></Compose>
+  <Compose Name="ForeignSecurityPrincipals"></Compose>
+  <Compose Name="LostAndFound"></Compose>
+  <Compose Name="Managed Service Accounts"></Compose>
+  <Compose Name="NTDS Quotas"></Compose>
+  <Compose Name="Program Data"></Compose>
+  <Compose Name="System"></Compose>
+  <Compose Name="Users"></Compose>
+  <Compose Name="Infrastructure"></Compose>
+</Composes>

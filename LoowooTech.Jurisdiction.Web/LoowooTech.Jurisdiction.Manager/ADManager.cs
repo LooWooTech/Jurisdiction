@@ -92,6 +92,18 @@ namespace LoowooTech.Jurisdiction.Manager
             }
         }
 
+        public string GetProperty(DirectoryEntry Entry, string PropertyName)
+        {
+            if (Entry.Properties.Contains(PropertyName))
+            {
+                return Entry.Properties[PropertyName][0].ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
         public List<string> GetAllProperty(SearchResult result, string PropertyName)
         {
             List<string> Values = new List<string>();
@@ -105,6 +117,25 @@ namespace LoowooTech.Jurisdiction.Manager
             return Values;
         }
 
+        public List<string> GetAllProperty(DirectoryEntry Entry, string PropertyName)
+        {
+            List<string> Values = new List<string>();
+            if (Entry.Properties.Contains(PropertyName))
+            {
+                foreach (var m in Entry.Properties[PropertyName])
+                {
+                    Values.Add(m.ToString());
+                }
+            }
+            return Values;
+        }
+
+        /// <summary>
+        /// 提取组或者用户
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="Category"></param>
+        /// <returns></returns>
         public  List<string> Tranlate(List<string> origin,string Category)
         {
             List<string> TheNew = new List<string>();

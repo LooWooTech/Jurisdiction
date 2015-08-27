@@ -44,6 +44,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             var list = Core.ADManager.GetAllOrganization();
             list.Remove("内部人员");
             ViewBag.List = list;
+            ViewBag.Tree = Core.ADManager.GetTree();
             return View();
         }
 
@@ -97,9 +98,16 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         }
         
         [HttpPost]
-        public ActionResult Manager(int ID, string Reason, bool? Check)
+        public ActionResult Manager(int ID, string Reason, bool? Check,int ?Day,int ? Month,int ?Year)
         {
-            Core.DataBookManager.Check(ID, Reason, Identity.Name, Check);
+            Core.DataBookManager.Check(ID, Reason, Identity.Name, Check,Day,Month,Year);
+            ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
+            //待审批列表
+            ViewBag.List = Core.DataBookManager.GetWait(Identity);
+            //审批列表
+            ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
+            //我的申请
+            ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
             return View();
         }
 

@@ -29,6 +29,37 @@ namespace LoowooTech.Jurisdiction.Manager
 
             return user;
         }
+
+
+
+        public User GetUserObject(string Name)
+        {
+            DirectoryEntry user = GetUser(Name);
+            if (user == null)
+            {
+                return null;
+            }
+            string Account = GetProperty(user, "sAMAccountName");
+            long accountExpires;
+            string Expires = GetProperty(user, "accountExpires");
+            if (long.TryParse(Expires, out accountExpires))
+            {
+                try
+                {
+                    Expires = DateTime.FromFileTime(accountExpires).ToString();
+                }
+                catch
+                {
+                    Expires = "从不";
+                }
+            }
+            return new User()
+            {
+                Name = Name,
+                Account = Account,
+                AccountExpires = Expires
+            };
+        }
         /// <summary>
         /// 通过用户名获取DirectoryEntry
         /// </summary>
@@ -143,6 +174,22 @@ namespace LoowooTech.Jurisdiction.Manager
             Group.CommitChanges();
             Group.Close();
         }
+        public void DeleteUserFromGroup(string Name, string GroupName)
+        {
+            string value = GetDistinguishedName(Name);
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("未找到相关用户信息");
+            }
+            DirectoryEntry group = GetGroup(GroupName);
+            if (group == null)
+            {
+                throw new ArgumentException("未找到相关组");
+            }
+            group.Properties["member"].Remove(value);
+            group.CommitChanges();
+            group.Close();
+        }
 
         /// <summary>
         /// 添加用户
@@ -198,6 +245,24 @@ namespace LoowooTech.Jurisdiction.Manager
             parent.Children.Remove(entry);
             parent.CommitChanges();
             parent.Close();
+        }
+
+
+        public List<User> GetListByGroupName(string GroupName)
+        {
+            List<User> list = new List<User>();
+            DirectoryEntry group = GetGroup(GroupName);
+            if (group == null)
+            {
+                return list;
+            }
+            var member = GetAllProperty(group, "member");
+            var names = Tranlate(member, "user");
+            foreach (var item in names)
+            {
+                list.Add(GetUserObject(item));
+            }
+            return list;
         }
 
 

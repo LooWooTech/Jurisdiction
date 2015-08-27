@@ -46,6 +46,12 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             return View("ASuccess");
         }
 
+        public ActionResult Gain()
+        {
+            var list = Core.ADManager.GetListGroup().Select(e => e.Name).ToList();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
 
        
 

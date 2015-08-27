@@ -2,6 +2,7 @@
     ViewBag.Title = "组群";
     Layout = "~/Views/Admin/_Layout.cshtml";
     Dictionary<string, List<string>> DICT = ViewBag.DICT;
+    LoowooTech.Jurisdiction.Models.Group Tree = ViewBag.Tree;
     List<string> List = ViewBag.List;
 }
 
@@ -11,6 +12,12 @@
     Html.RenderPartial("Search");
 }
 
+<hr />
+<ul>
+    @{
+        Html.RenderPartial("Tree", Tree);
+    }
+</ul>
 <hr />
 <ul>
     @foreach (var key in DICT.Keys)

@@ -58,6 +58,7 @@
     <Compile Include="AUserManager.cs" />
     <Compile Include="DataBookManager.cs" />
     <Compile Include="GroupManager.cs" />
+    <Compile Include="IgnoreManager.cs" />
     <Compile Include="JURDbContext.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="ManagerCore.cs" />
@@ -77,6 +78,9 @@
       <Project>{d5927e0a-593e-4aa0-bd72-6606039acade}</Project>
       <Name>LoowooTech.Jurisdiction.Models</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SystemInfo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

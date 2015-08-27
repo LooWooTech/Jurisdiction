@@ -1,0 +1,13 @@
+﻿@model LoowooTech.Jurisdiction.Models.Group
+@if (Model != null && !string.IsNullOrEmpty(Model.Name))
+{
+    <li>
+        @(Model.Name)
+        <ul>
+            @foreach (var item in Model.Children)
+            {
+                Html.RenderPartial("Tree", item);
+            }
+        </ul>
+    </li>
+}

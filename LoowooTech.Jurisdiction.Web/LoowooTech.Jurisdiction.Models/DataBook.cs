@@ -25,6 +25,49 @@ namespace LoowooTech.Jurisdiction.Models
         public string Checker { get; set; }
         public bool? Check { get; set; }
         public DateTime CheckTime { get; set; }
+        public int? Day { get; set; }
+        public int? Month { get; set; }
+        public int? Year { get; set; }
         public string Reason { get; set; }
+        [NotMapped]
+        public TimeSpan Span
+        {
+            get
+            {
+                return SpareTime();
+            }
+        }
+        [NotMapped]
+        public string DateDiff
+        {
+            get
+            {
+                TimeSpan span = SpareTime();
+                return span.Days.ToString() + "天"+span.Hours.ToString()+"小时"+span.Minutes.ToString()+"分钟"+span.Seconds.ToString()+"秒";
+            }
+        }
+
+        public TimeSpan SpareTime()
+        {
+            DateTime time = CheckTime;
+            if (Day.HasValue)
+            {
+                time = time.AddDays(Day.Value);
+            }
+            if (Month.HasValue)
+            {
+                time= time.AddMonths(Month.Value);
+            }
+            if (Year.HasValue)
+            {
+                time= time.AddYears(Year.Value);
+            }
+            TimeSpan temp = time.Subtract(CheckTime);
+            if (temp.Days == 0 && temp.Hours == 0 && temp.Minutes == 0 && temp.Seconds == 0)
+            {
+                return temp;
+            }
+            return time.Subtract(DateTime.Now);
+        }
     }
 }

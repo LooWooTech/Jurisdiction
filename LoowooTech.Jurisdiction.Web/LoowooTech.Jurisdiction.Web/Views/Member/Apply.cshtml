@@ -33,10 +33,20 @@
             <div class="form-group">
                 <label for="" class="control-label col-lg-3">申请组：</label>
                 <div class="col-lg-8">
+                   <input id="Group" class="form-control" autocomplete="off" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-8 col-lg-offset-3">
                     @foreach (var group in List)
                     {
                         <label class="radio">
-                            <input type="radio" name="GroupName" value="@(group.Name)" />@(group.Name)——@(group.Descriptions)
+                            <input type="radio" name="GroupName" value="@(group.Name)" />@(group.Name)
+                            @if (!string.IsNullOrEmpty(group.Descriptions))
+                            {
+                                @("--" + group.Descriptions);
+                            }
+
                         </label>
                     }
                 </div>
@@ -57,9 +67,11 @@
                 <th>申请组名</th>
                 <th>申请时间</th>
                 <th>组管理者</th>
-                <th>审核状态</th>
                 <th>审核人</th>
                 <th>审核时间</th>
+                <th>审核状态</th>
+                <th>权限剩余时间</th>
+                <th>审核备注（原因）</th>
             </tr>
             @foreach (var item in MList)
             {
@@ -70,30 +82,45 @@
                     <td>@(item.Manager)</td>
                     @if (item.Check.HasValue)
                     {
+                        <td>@(item.Checker)</td>
+                        <td>@(item.CheckTime)</td>
                         if (item.Check.Value)
                         {
-                            <td><span class="glyphicon glyphicon-ok-sign">审核通过</span></td>
-                            
+                            <td class="text-success"><span class="glyphicon glyphicon-ok-sign">审核通过</span></td>
+                            <td>@(item.DateDiff)</td>
                         }
                         else
                         {
-                            <td><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
-                            
+                            <td class="text-danger"><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
+                            <td>-</td>
                         }
-                        <td>@(item.Checker)</td>
-                        <td>@(item.CheckTime)</td>
+
                     }
                     else
                     {
-                        <td><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
                         <td>-</td>
+                        <td>-</td>
+                        <td class="text-warning"><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
                         <td>-</td>
                         
                     }
+                    <td>@(item.Reason)</td>
                 </tr>
             }
         </table>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $("#Group").AutoComplete({
+            'data': "/Member/Gain",
+            'width': 'auto',
+            'itemHeight': 50,
+            'ajaxDataType': 'json',
+            'onerror': function (msg) { alert(msg);}
+        })
+    })
+</script>
 
 

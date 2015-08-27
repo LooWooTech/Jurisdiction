@@ -160,6 +160,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootswatch.min.css" />
+    <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\main.css" />
     <Content Include="Content\main.min.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -169,6 +170,7 @@
     <Content Include="Scripts\html5shiv.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -272,6 +274,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Admin\AddUserGroup.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Admin\Tree.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

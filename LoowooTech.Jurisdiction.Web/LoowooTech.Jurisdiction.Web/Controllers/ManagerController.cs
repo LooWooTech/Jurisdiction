@@ -26,16 +26,32 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
             //待审批列表
             ViewBag.List = Core.DataBookManager.GetWait(Identity);
+            //管理组以及对应组里面的成员
+            ViewBag.DICT = Core.ADManager.GetManager(Identity.Name);
             //审批列表
             ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
             //我的申请
             ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
+            string error = string.Empty;
+            Core.DataBookManager.Examine(Identity.Name, out error);
+            if (!string.IsNullOrEmpty(error))
+            {
+                throw new ArgumentException("更新权限列表失败："+error);
+            }
             return View();
         }
         [HttpPost]
-        public ActionResult Manager(int ID, string Reason, bool? Check)
+        public ActionResult Manager(int ID, string Reason, bool? Check,int? Day,int ?Month,int ? Year)
         {
-            Core.DataBookManager.Check(ID, Reason, Identity.Name, Check);
+            Core.DataBookManager.Check(ID, Reason, Identity.Name, Check,Day,Month,Year);
+            ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
+            //待审批列表
+            ViewBag.List = Core.DataBookManager.GetWait(Identity);
+            //审批列表
+            ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
+            //我的申请
+            ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
+            ViewBag.DICT = Core.ADManager.GetManager(Identity.Name);
             return View();
         }
 
