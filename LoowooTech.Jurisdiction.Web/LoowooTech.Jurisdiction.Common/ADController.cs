@@ -37,7 +37,6 @@ namespace LoowooTech.Jurisdiction.Common
                 }
             }
         }
-
         private static DirectoryEntry GetDirectoryObject(string Name, string Password)
         {
             try
@@ -53,7 +52,23 @@ namespace LoowooTech.Jurisdiction.Common
         {
             return GetDirectoryObject(ADName, ADPassword);
         }
-        
+        private static DirectoryEntry Get(string Filter)
+        {
+            var searchResult = SearchOne(Filter);
+            if (searchResult != null)
+            {
+                return searchResult.GetDirectoryEntry();
+            }
+            return null;
+        }
+        private static DirectoryEntry GetDirectoryObject(string Name)
+        {
+            return Get("(&(name=" + Name + "))"); 
+        }
+        private static DirectoryEntry GetUserObject(string sAMAccountName)
+        {
+            return Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))");
+        }
         private static SearchResult SearchOne(string Filter, DirectoryEntry Entry=null)
         {
             if (Entry == null)
@@ -93,18 +108,18 @@ namespace LoowooTech.Jurisdiction.Common
         }
         private static List<string> GetAllProperty(DirectoryEntry Entry, string PropertyName)
         {
+            var list = new List<string>();
             if (Entry.Properties.Contains(PropertyName))
             {
-                var list = new List<string>();
+                
                 foreach (var m in Entry.Properties[PropertyName])
                 {
                     list.Add(m.ToString());
                 }
-                return list;
+                
             }
-            return null;
+            return list;
         }
-
         private static List<string> Extract(List<string> Origin, string Category)
         {
             var results = new List<string>();
@@ -119,7 +134,6 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return results;
         }
-
         private static string GetProperty(SearchResult SearchResult, string PropertyName)
         {
             if (SearchResult.Properties.Contains(PropertyName))
@@ -139,7 +153,15 @@ namespace LoowooTech.Jurisdiction.Common
         {
             return GetProperty(Entry, "distinguishedName");
         }
-
+        private static string GetDistinguishedName(string sAMAccountName)
+        {
+            var user = GetUserObject(sAMAccountName);
+            if (user == null)
+            {
+                return null;
+            }
+            return GetDistinguishedName(user);
+        }
         private static bool IsIgnore(string DistinguishedName)
         {
             var str=DistinguishedName.Split(',');
@@ -152,17 +174,6 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return false;
         }
-
-        private static DirectoryEntry Get(string Filter)
-        {
-            var searchResult = SearchOne(Filter);
-            if (searchResult != null)
-            {
-                return searchResult.GetDirectoryEntry();
-            }
-            return null;
-        }
-
         private  static List<string> GetList(string Filter)
         {
             var list = new List<string>();
@@ -176,7 +187,6 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return list;
         }
-
         public static List<string> GetGroupList()
         {
             return GetList("(&(objectCategory=group)(objectClass=group))");
@@ -193,17 +203,27 @@ namespace LoowooTech.Jurisdiction.Common
         }
         public static User GetUser(string Name)
         {
-            var user=Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName="+Name+"))");
+            var user = GetUserObject(Name);
             return new User()
             {
                 Name = GetProperty(user, "sAMAccountName"),
                 Group = Extract(GetAllProperty(user, "memberOf"), "group")
             };
         }
-
         public static string GetNameBysAMAccountName(string sAMAccountName)
         {
             return GetProperty(Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))"), "name");
+        }
+
+        public static bool IsMember(string GroupName, string Name)
+        {
+            var GEntry = GetDirectoryObject(GroupName);
+            if (GEntry == null)
+            {
+                throw new ArgumentException("未找到相关的组信息");
+            }
+            string UserDistinguishedName = GetDistinguishedName(Name);
+            return GetAllProperty(GEntry, "member").Contains(UserDistinguishedName) ? true : false;
         }
     }
 }

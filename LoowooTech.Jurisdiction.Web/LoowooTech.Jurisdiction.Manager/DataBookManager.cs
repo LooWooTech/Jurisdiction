@@ -9,15 +9,23 @@ namespace LoowooTech.Jurisdiction.Manager
 {
     public class DataBookManager:ManagerBase
     {
-        public int Add(DataBook Book,string Name)
+        public int Add(DataBook Book)
         {
-            Book.Name = Name;
             using (var db = GetJURDataContext())
             {
                 db.DataBooks.Add(Book);
                 db.SaveChanges();
                 return Book.ID;
             }
+        }
+        public List<int> Add(List<string> Groups, string Name)
+        {
+            var list = new List<int>();
+            foreach (var group in Groups)
+            {
+                list.Add(Add(new DataBook() { Name = Name, GroupName = group }));
+            }
+            return list;
         }
 
         public void Edit(DataBook Book)
@@ -36,6 +44,36 @@ namespace LoowooTech.Jurisdiction.Manager
                 }
             }
         }
+        public DataBook Get(string GroupName)
+        {
+            using (var db = GetJURDataContext())
+            {
+                return db.DataBooks.FirstOrDefault(e => e.GroupName == GroupName);
+            }
+        }
+        public List<DataBook> Get(List<int> Indexs)
+        {
+            var list = new List<DataBook>();
+            foreach (var item in Indexs)
+            {
+                list.Add(Get(item));
+            }
+            return list;
+        }
+        public List<DataBook> Get(List<string> GroupNames)
+        {
+            var list = new List<DataBook>();
+            foreach (var item in GroupNames)
+            {
+                var entry = Get(item);
+                if (entry != null)
+                {
+                    list.Add(entry);
+                }
+                //list.Add(Get(item));
+            }
+            return list;
+        }
 
         public DataBook Get(int ID)
         {
@@ -44,9 +82,6 @@ namespace LoowooTech.Jurisdiction.Manager
                 return db.DataBooks.Find(ID);
             }
         }
-
-
-
 
         public List<DataBook> GetFinish(string Name)
         {
@@ -63,11 +98,7 @@ namespace LoowooTech.Jurisdiction.Manager
                 return db.DataBooks.Where(e => e.Name == Name).OrderByDescending(e => e.ID).ToList();
             }
         }
-
-
-
-        
-
+ 
         public void Check(int ID, string Reason,string Checker, bool? Check,int? Day,int? Month,int ?Year)
         {
             if (!Check.HasValue||string.IsNullOrEmpty(Checker))
@@ -92,11 +123,7 @@ namespace LoowooTech.Jurisdiction.Manager
             }
             Book.Checker = Checker;
             Book.Reason = Reason;
-            Book.Check = Check;
             Book.CheckTime = DateTime.Now;
-            Book.Day = Day;
-            Book.Month = Month;
-            Book.Year = Year;
             try
             {
                 Edit(Book);
@@ -129,5 +156,6 @@ namespace LoowooTech.Jurisdiction.Manager
                 }
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using LoowooTech.Jurisdiction.Models
+@{
     ViewBag.Title = "申请权限";
     Layout = "~/Views/Member/_Layout.cshtml";
     LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
@@ -74,29 +75,25 @@
                     <td>@(Serial++)</td>
                     <td>@(item.GroupName)</td>
                     <td>@(item.CreateTime)</td>
-                    @if (item.Check.HasValue)
+                    <td>@(item.Checker)</td>
+                    
+                    @switch (item.Status)
                     {
-                        <td>@(item.Checker)</td>
+                        case CheckStatus.Wait:
+                            <td></td>
+                            <td class="text-warning"><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
+                            <td>-</td>
+                            break;
+                        case CheckStatus.Agree:
                         <td>@(item.CheckTime)</td>
-                        if (item.Check.Value)
-                        {
                             <td class="text-success"><span class="glyphicon glyphicon-ok-sign">审核通过</span></td>
                             <td>@(item.DateDiff)</td>
-                        }
-                        else
-                        {
-                            <td class="text-danger"><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
-                            <td>-</td>
-                        }
-
-                    }
-                    else
-                    {
+                            break;
+                        case CheckStatus.Disagree:
+                        <td>@(item.CheckTime)</td>
+                        <td class="text-danger"><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
                         <td>-</td>
-                        <td>-</td>
-                        <td class="text-warning"><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
-                        <td>-</td>
-                        
+                            break;
                     }
                     <td>@(item.Reason)</td>
                 </tr>

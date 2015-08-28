@@ -1,4 +1,5 @@
 ﻿using LoowooTech.Jurisdiction.Models;
+using LoowooTech.Jurisdiction.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +60,23 @@ namespace LoowooTech.Jurisdiction.Manager
                 GroupName = context.Request.Form["GroupName"],
                 Manager = context.Request.Form["Manager"]
             };
+        }
+
+        public void Screen(string[] Origin,string sAMAccountName, out List<string> None, out List<string> Have)
+        {
+            None = new List<string>();
+            Have = new List<string>();
+            foreach (var item in Origin)
+            {
+                if (ADController.IsMember(item, sAMAccountName))
+                {
+                    Have.Add(item);
+                }
+                else
+                {
+                    None.Add(item);
+                }
+            }
         }
     }
 }

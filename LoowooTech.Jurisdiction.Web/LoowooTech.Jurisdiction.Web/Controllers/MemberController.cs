@@ -40,15 +40,23 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult Apply()
+        public ActionResult Apply(string Boss)
         {
             var groups = HttpContext.GetValue("Group");
-            var ID = Core.DataBookManager.Add(Book, Identity.Name);
-            if (ID == 0)
+            List<string> None;
+            List<string> Have;
+            List<int> Indexs;
+            Core.AuthorizeManager.Screen(groups, Identity.Name, out None, out Have);
+            try
             {
-                throw new ArgumentException("填写申请权限失败，请重新填写！");
+                 Indexs=Core.DataBookManager.Add(None, Identity.Name);
             }
-            ViewBag.Book = Core.DataBookManager.Get(ID);
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            ViewBag.Have = Have;
+            ViewBag.Book = Core.DataBookManager.Get(Indexs);
             return View("ASuccess");
         }
 

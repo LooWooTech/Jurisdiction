@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "申请中心";
     Layout = "~/Views/Manager/_Layout.cshtml";
-    List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.List;
+    List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.Wait;
     List<LoowooTech.Jurisdiction.Models.DataBook> Finishs = ViewBag.Finishs;
     List<LoowooTech.Jurisdiction.Models.DataBook> Mines = ViewBag.Mines;
     Dictionary<string, List<LoowooTech.Jurisdiction.Models.User>> DICT = ViewBag.DICT;
@@ -86,26 +86,7 @@
         }
     </div>
     <div class="tab-pane fade" id="Manager">
-        @foreach (var GroupName in DICT.Keys)
-        {
-            <h3>@(GroupName)</h3>
-            <hr />
-            {
-            Number = 1;
-            }
-            <table class="table table-bordered">
-                @foreach (var user in DICT[GroupName])
-                {
-                    <tr>
-                        <td>@(Number++)</td>
-                        <td>@(user.Name)</td>
-                        <td>@(user.Account)</td>
-                        <td>@(user.AccountExpires)</td>
-                    </tr>
-                }
-                
-            </table>
-        }
+
     </div>
     <div class="tab-pane fade" id="Finish">
         <table class="table table-bordered">
@@ -125,17 +106,7 @@
                     <td>@(item.GroupName)</td>
                     <td>@(item.CreateTime)</td>
                     <td>
-                        @if (item.Check.HasValue)
-                        {
-                            if (item.Check.Value)
-                            {
-                                <i class="glyphicon glyphicon-ok"></i>
-                            }
-                            else
-                            {
-                                <i class="glyphicon glyphicon-remove"></i>
-                            }
-                        }
+                       
                     </td>
                     <td>@(item.Reason)</td>
                 </tr>
@@ -158,17 +129,7 @@
                     <td>@(item.Checker)</td>
                     <td>@(item.CheckTime)</td>
                     <td>
-                        @if (item.Check.HasValue)
-                        {
-                            if (item.Check.Value)
-                            {
-                                <i class="glyphicon glyphicon-ok"></i>
-                            }
-                            else
-                            {
-                                <i class="glyphicon glyphicon-remove"></i>
-                            }
-                        }
+                       
                     </td>
                     <td>
                         @(item.Reason)

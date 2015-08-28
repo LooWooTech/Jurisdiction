@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -18,22 +19,45 @@ namespace LoowooTech.Jurisdiction.Models
         [Key]
         [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+        /// <summary>
+        /// 申请人
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 申请的组名
+        /// </summary>
         public string GroupName { get; set; }
+        /// <summary>
+        /// 申请时间
+        /// </summary>
         public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 审核人
+        /// </summary>
         public string Checker { get; set; }
-        public bool? Check { get; set; }
+        /// <summary>
+        /// 审核状态
+        /// </summary>
+        [Column(TypeName="int")]
+        public CheckStatus Status { get; set; }
+        /// <summary>
+        /// 审核时间
+        /// </summary>
         public DateTime CheckTime { get; set; }
+        /// <summary>
+        /// 到期时间
+        /// </summary>
         public DateTime MaturityTime { get; set; }
+        /// <summary>
+        /// 原因 备注
+        /// </summary>
         public string Reason { get; set; }
-
-        
         [NotMapped]
         public TimeSpan Span
         {
             get
             {
-                return SpareTime();
+                return MaturityTime.Subtract(CheckTime);
             }
         }
         [NotMapped]
@@ -41,19 +65,18 @@ namespace LoowooTech.Jurisdiction.Models
         {
             get
             {
-                TimeSpan span = SpareTime();
-                return span.Days.ToString() + "天"+span.Hours.ToString()+"小时"+span.Minutes.ToString()+"分钟"+span.Seconds.ToString()+"秒";
+                return Span.Days.ToString() + "天"+Span.Hours.ToString()+"小时"+Span.Minutes.ToString()+"分钟"+Span.Seconds.ToString()+"秒";
             }
         }
+    }
 
-        public TimeSpan SpareTime()
-        {
-            TimeSpan temp = time.Subtract(CheckTime);
-            if (temp.Days == 0 && temp.Hours == 0 && temp.Minutes == 0 && temp.Seconds == 0)
-            {
-                return temp;
-            }
-            return time.Subtract(DateTime.Now);
-        }
+    public enum CheckStatus
+    {
+        [Description("等待审核")]
+        Wait,
+        [Description("同意")]
+        Agree,
+        [Description("不同意")]
+        Disagree
     }
 }

@@ -23,10 +23,15 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
         public ActionResult Manager()
         {
-            ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
+            //获取我管理的组
+            ViewBag.ManageGroup = Core.AuthorizeManager.GetList(Identity.Name);
+
             //待审批列表
+            var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(Identity.Name));
+            ViewBag.Wait = Core.DataBookManager.Get(groups);
+
             //管理组以及对应组里面的成员
-            ViewBag.DICT = Core.ADManager.GetManager(Identity.Name);
+            //ViewBag.DICT = Core.ADManager.GetManager(Identity.Name);
             //审批列表
             ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
             //我的申请
