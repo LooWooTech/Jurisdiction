@@ -12,7 +12,6 @@ namespace LoowooTech.Jurisdiction.Manager
         public int Add(DataBook Book,string Name)
         {
             Book.Name = Name;
-            Book.Manager = Core.GroupManager.GetAdministrator(Book.GroupName);
             using (var db = GetJURDataContext())
             {
                 db.DataBooks.Add(Book);
@@ -46,27 +45,7 @@ namespace LoowooTech.Jurisdiction.Manager
             }
         }
 
-        public int Wait(string Name)
-        {
-            using (var db = GetJURDataContext())
-            {
-                return db.DataBooks.Where(e => e.Manager == Name && e.Check == null).Count();
-            }
-        }
 
-        public List<DataBook> GetWait(UserIdentity Identity)
-        {
-            List<DataBook> List = null;
-            if (Core.GroupManager.IsAdministrator(Identity.Groups))
-            {
-                List = GetList(null);
-            }
-            else
-            {
-                List = GetList(Core.ADManager.GetCn(Identity.Name));
-            }
-            return List;
-        }
 
 
         public List<DataBook> GetFinish(string Name)
@@ -86,13 +65,6 @@ namespace LoowooTech.Jurisdiction.Manager
         }
 
 
-        public List<DataBook> GetList(string Name)
-        {
-            using (var db = GetJURDataContext())
-            {
-                return db.DataBooks.Where(e => e.Manager == Name && e.Check == null).OrderByDescending(e=>e.ID).ToList();
-            }
-        }
 
         
 

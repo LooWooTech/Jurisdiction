@@ -10,28 +10,28 @@ namespace LoowooTech.Jurisdiction.Manager
 {
     public partial class ADManager:ManagerBase
     {
-        private string ADServer = "LDAP://10.22.102.19";
-        private string ADName = "Administrator";
-        private string ADPassword = "L0owo0Tech";
-        public ADManager()
+        private static readonly string ADServer = "LDAP://10.22.102.19";
+        private static readonly string ADName = "Administrator";
+        private static readonly string ADPassword = "L0owo0Tech";
+        static ADManager()
         {
-            //this.ADServer = System.Configuration.ConfigurationManager.AppSettings["Server"];
-            //this.ADName = System.Configuration.ConfigurationManager.AppSettings["Name"];
-            //this.ADPassword = System.Configuration.ConfigurationManager.AppSettings["Password"];
+            ADServer = System.Configuration.ConfigurationManager.AppSettings["Server"];
+            ADName = System.Configuration.ConfigurationManager.AppSettings["Name"];
+            ADPassword = System.Configuration.ConfigurationManager.AppSettings["Password"];
         }
 
         public  DirectoryEntry GetDirectoryObject(string Name, string Password)
         {
-            DirectoryEntry entry = null;
+            
             try
             {
-                entry = new DirectoryEntry(ADServer, ADName, ADPassword, AuthenticationTypes.Secure);
+                return new DirectoryEntry(ADServer, ADName, ADPassword, AuthenticationTypes.Secure);
             }
             catch
             {
-
+                return null;
             }
-            return entry;
+            
         }
 
         public  DirectoryEntry GetDirectoryObject()
@@ -45,7 +45,8 @@ namespace LoowooTech.Jurisdiction.Manager
             {
                 Entry = GetDirectoryObject();
             }
-            using (DirectorySearcher searcher = new DirectorySearcher(Entry))
+                       
+            using (var searcher = new DirectorySearcher(Entry))
             {
                 searcher.Filter = Filter;
                 searcher.SearchScope = SearchScope.Subtree;

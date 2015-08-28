@@ -25,7 +25,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         {
             ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
             //待审批列表
-            ViewBag.List = Core.DataBookManager.GetWait(Identity);
             //管理组以及对应组里面的成员
             ViewBag.DICT = Core.ADManager.GetManager(Identity.Name);
             //审批列表
@@ -46,7 +45,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             Core.DataBookManager.Check(ID, Reason, Identity.Name, Check,Day,Month,Year);
             ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
             //待审批列表
-            ViewBag.List = Core.DataBookManager.GetWait(Identity);
             //审批列表
             ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
             //我的申请

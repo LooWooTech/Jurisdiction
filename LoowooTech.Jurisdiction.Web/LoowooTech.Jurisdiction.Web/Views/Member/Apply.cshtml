@@ -4,6 +4,7 @@
     LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
     List<LoowooTech.Jurisdiction.Models.Group> List = ViewBag.ListGroup;
     List<LoowooTech.Jurisdiction.Models.DataBook> MList = ViewBag.Mine;
+    List<string> ManagerList = ViewBag.ManagerList;
     int SerialNumber = 1;
     int Serial = 1;
 }
@@ -28,27 +29,22 @@
                 }
             }
         </div>
-
         <form class="form-horizontal" method="post" action="">
             <div class="form-group">
-                <label for="" class="control-label col-lg-3">申请组：</label>
-                <div class="col-lg-8">
-                   <input id="Group" class="form-control" autocomplete="off" />
+                <label for="" class="control-label col-lg-3">管理者：</label>
+                <div class="col-lg-6">
+                    <select class="form-control" name="Boss">
+                        @foreach (var item in ManagerList)
+                        {
+                            <option value="@(item)">@(item)</option>
+                        }
+                    </select>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-lg-8 col-lg-offset-3">
-                    @foreach (var group in List)
-                    {
-                        <label class="radio">
-                            <input type="radio" name="GroupName" value="@(group.Name)" />@(group.Name)
-                            @if (!string.IsNullOrEmpty(group.Descriptions))
-                            {
-                                @("--" + group.Descriptions);
-                            }
+                <label for="" class="control-label col-lg-3">申请组：</label>
+                <div class="col-lg-8" id="Group">
 
-                        </label>
-                    }
                 </div>
             </div>
             <div class="form-group">
@@ -66,7 +62,6 @@
                 <th>序号</th>
                 <th>申请组名</th>
                 <th>申请时间</th>
-                <th>组管理者</th>
                 <th>审核人</th>
                 <th>审核时间</th>
                 <th>审核状态</th>
@@ -79,7 +74,6 @@
                     <td>@(Serial++)</td>
                     <td>@(item.GroupName)</td>
                     <td>@(item.CreateTime)</td>
-                    <td>@(item.Manager)</td>
                     @if (item.Check.HasValue)
                     {
                         <td>@(item.Checker)</td>
@@ -113,14 +107,24 @@
 
 <script>
     $(function () {
-        $("#Group").AutoComplete({
-            'data': "/Member/Gain",
-            'width': 'auto',
-            'itemHeight': 50,
-            'ajaxDataType': 'json',
-            'onerror': function (msg) { alert(msg);}
+        $("[name=Boss]").click(function () {
+            var value = $(this).val();
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    $("#Group").empty().append(xmlhttp.responseText);
+                }
+            }
+            xmlhttp.open("GET", "/Member/GetGroupList?Boss="+value, true);
+            xmlhttp.send();
         })
     })
 </script>
+
 
 

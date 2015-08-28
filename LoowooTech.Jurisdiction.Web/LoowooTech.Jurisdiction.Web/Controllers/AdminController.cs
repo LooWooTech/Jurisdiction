@@ -89,7 +89,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         {
             ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
             //待审批列表
-            ViewBag.List = Core.DataBookManager.GetWait(Identity);
             //审批列表
             ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
             //我的申请
@@ -103,7 +102,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             Core.DataBookManager.Check(ID, Reason, Identity.Name, Check,Day,Month,Year);
             ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
             //待审批列表
-            ViewBag.List = Core.DataBookManager.GetWait(Identity);
             //审批列表
             ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
             //我的申请
@@ -123,6 +121,36 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
                 throw new ArgumentException(ex.Message);
             }
             return RedirectToAction("Group");
+        }
+
+
+        public ActionResult Impower()
+        {
+            ViewBag.List = Core.AuthorizeManager.GetList();
+            ViewBag.Groups = ADController.GetGroupList();
+            return View();
+        }
+
+        public ActionResult Gain()
+        {
+            var list = ADController.GetUserList();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Impower(Authorize authorize)
+        {
+            try
+            {
+                Core.AuthorizeManager.Add(Core.AuthorizeManager.Get(HttpContext));
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            ViewBag.List = Core.AuthorizeManager.GetList();
+            ViewBag.Groups = ADController.GetGroupList();
+            return View();
         }
 
 

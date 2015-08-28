@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AUser.cs" />
+    <Compile Include="Authorize.cs" />
     <Compile Include="DataBook.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="NullableFilter.cs" />

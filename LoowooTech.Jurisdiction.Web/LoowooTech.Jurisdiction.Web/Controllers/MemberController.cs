@@ -26,17 +26,23 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         /// <returns></returns>
         public ActionResult Apply()
         {
+            ViewBag.ManagerList = Core.AuthorizeManager.GetAllManager();
             ViewBag.User = Core.UserManager.Get(Identity);
             ViewBag.ListGroup = Core.ADManager.GetListGroup();
             ViewBag.Mine = Core.DataBookManager.GetMine(Identity.Name);
             return View();
         }
+        public ActionResult GetGroupList(string Boss)
+        {
+            var html = Core.AuthorizeManager.GetList(Boss);
+            return HtmlResult(html);
+        }
 
 
         [HttpPost]
-        public ActionResult Apply(DataBook Book)
+        public ActionResult Apply()
         {
-
+            var groups = HttpContext.GetValue("Group");
             var ID = Core.DataBookManager.Add(Book, Identity.Name);
             if (ID == 0)
             {

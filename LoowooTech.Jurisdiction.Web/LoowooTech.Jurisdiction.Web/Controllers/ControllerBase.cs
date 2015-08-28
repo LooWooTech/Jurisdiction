@@ -29,14 +29,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
                 string cn = Core.ADManager.GetCn(Identity.Name);
                 if (!string.IsNullOrEmpty(cn))
                 {
-                    if (Core.GroupManager.IsAdministrator(Identity.Groups))
-                    {
-                        ViewBag.BCount = Core.DataBookManager.Wait(null);
-                    }
-                    else
-                    {
-                        ViewBag.BCount = Core.DataBookManager.Wait(cn);
-                    }
+                  
                 }
                 else
                 {
@@ -64,6 +57,16 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             filterContext.HttpContext.Response.StatusCode = 500;
             ViewBag.Exception = GetException(filterContext.Exception);
             filterContext.Result = View("Error");
+        }
+
+        protected ActionResult HtmlResult(List<string> html)
+        {
+            string str = string.Empty;
+            foreach (var item in html)
+            {
+                str += "<label class='checkbox-inline'><input type='checkbox' name='Group' value='" + item + "' />" + item + "</label>";
+            }
+            return Content(str);
         }
     }
 }

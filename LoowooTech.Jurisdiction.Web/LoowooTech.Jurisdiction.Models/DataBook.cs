@@ -20,15 +20,14 @@ namespace LoowooTech.Jurisdiction.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public string GroupName { get; set; }
-        public string Manager { get; set; }
         public DateTime CreateTime { get; set; }
         public string Checker { get; set; }
         public bool? Check { get; set; }
         public DateTime CheckTime { get; set; }
-        public int? Day { get; set; }
-        public int? Month { get; set; }
-        public int? Year { get; set; }
+        public DateTime MaturityTime { get; set; }
         public string Reason { get; set; }
+
+        
         [NotMapped]
         public TimeSpan Span
         {
@@ -49,19 +48,6 @@ namespace LoowooTech.Jurisdiction.Models
 
         public TimeSpan SpareTime()
         {
-            DateTime time = CheckTime;
-            if (Day.HasValue)
-            {
-                time = time.AddDays(Day.Value);
-            }
-            if (Month.HasValue)
-            {
-                time= time.AddMonths(Month.Value);
-            }
-            if (Year.HasValue)
-            {
-                time= time.AddYears(Year.Value);
-            }
             TimeSpan temp = time.Subtract(CheckTime);
             if (temp.Days == 0 && temp.Hours == 0 && temp.Minutes == 0 && temp.Seconds == 0)
             {
