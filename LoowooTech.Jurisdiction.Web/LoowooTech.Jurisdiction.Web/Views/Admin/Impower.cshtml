@@ -1,8 +1,10 @@
-﻿@{
+﻿@using LoowooTech.Jurisdiction.Common
+@{
     ViewBag.Title = "授权";
     Layout = "~/Views/Admin/_Layout.cshtml";
     List<LoowooTech.Jurisdiction.Models.Authorize> list = ViewBag.List;
     List<string> Groups = ViewBag.Groups;
+    var Reborn = Groups.ListToTable(2);
     int SerialNumber = 1;
 }
 <div style="position:relative;">
@@ -15,22 +17,33 @@
 <div class="tab-content">
     <div class="tab-pane fade active in" id="Create">
         @{
-            Html.RenderPartial("Accredit", Groups);
+            Html.RenderPartial("Accredit", Reborn);
         }
     </div>
     <div class="tab-pane fade" id="List">
         <table class="table table-bordered">
             <tr>
                 <th>序号</th>
-                <th>管理者</th>
-                <th>管理组名</th>
+                <th style="width:100px;">管理者</th>
+                <th >管理组名</th>
+                <th>备注</th>
             </tr>
             @foreach (var item in list)
             {
                 <tr>
                     <td>@(SerialNumber++)</td>
                     <td>@(item.Manager)</td>
-                    <td>@(item.GroupName)</td>
+                    <td>
+                        @foreach (var entry in item.GroupName.StrToList(','))
+                        {
+                            <span class="label label-primary" style="line-height:250%">@(entry)</span>
+                        }                    
+                    </td>
+                    <td>
+                        @{
+                Html.RenderPartial("Edit", item);
+                        }
+                    </td>
                 </tr>
             }
         </table>

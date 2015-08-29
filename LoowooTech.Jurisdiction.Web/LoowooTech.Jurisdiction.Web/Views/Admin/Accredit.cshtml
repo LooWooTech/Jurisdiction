@@ -1,4 +1,4 @@
-﻿@model IEnumerable<string>
+﻿@model IEnumerable<string[]>
 
 
 <form class="form-horizontal" method="post" action="">
@@ -11,12 +11,29 @@
     <div class="form-group">
         <label for="" class="control-label col-lg-3">管理组：</label>
         <div class="col-lg-6">
-            @foreach (var item in Model)
-            {
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="@(item)" name="GroupName"/>@(item)
-                </label>
-            }
+            <table class="table">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @foreach (var entry in item)
+                        {
+                            <td>
+                                @if (!string.IsNullOrEmpty(entry))
+                                {
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="@(entry)" name="GroupName" />@(entry)
+                                    </label>
+                                }
+                                
+                            </td>
+
+                        }
+                    </tr>
+                    
+                }
+            </table>
+           
+           
         </div>
     </div>
     <div class="col-lg-6 col-lg-offset-3">

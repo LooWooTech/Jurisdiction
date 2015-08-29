@@ -54,6 +54,7 @@
     <Compile Include="Group.cs" />
     <Compile Include="NullableFilter.cs" />
     <Compile Include="ObjectClass.cs" />
+    <Compile Include="Page.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

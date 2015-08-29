@@ -19,22 +19,6 @@
     }
 </ul>
 <hr />
-<ul>
-    @foreach (var key in DICT.Keys)
-    {
-        <li>
-            @(key)
-            @{
-                var list = DICT[key];
-                <ul>
-                    @foreach (var item in list)
-                    {
-                        <li>@(item)</li>
-                    }
-                </ul>
-            }
-        </li>
-    }
-</ul>
+
 
 

@@ -18,4 +18,12 @@ namespace LoowooTech.Jurisdiction.Models
         public string Manager { get; set; }
         
     }
+
+    public enum AuthFilter
+    {
+        All,
+        Wait,
+        Agree,
+        Disagree
+    }
 }

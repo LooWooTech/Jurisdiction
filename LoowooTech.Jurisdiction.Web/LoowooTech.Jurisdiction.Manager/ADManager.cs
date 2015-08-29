@@ -10,9 +10,9 @@ namespace LoowooTech.Jurisdiction.Manager
 {
     public partial class ADManager:ManagerBase
     {
-        private static readonly string ADServer = "LDAP://10.22.102.19";
-        private static readonly string ADName = "Administrator";
-        private static readonly string ADPassword = "L0owo0Tech";
+        private static readonly string ADServer;
+        private static readonly string ADName ;
+        private static readonly string ADPassword ;
         static ADManager()
         {
             ADServer = System.Configuration.ConfigurationManager.AppSettings["Server"];

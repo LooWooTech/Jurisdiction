@@ -27,15 +27,41 @@ namespace LoowooTech.Jurisdiction.Common
         public static List<string> StrToList(this string str,char ch)
         {
             List<string> list = new List<string>();
-            var key = str.Split(ch);
-            foreach (var item in key)
+            if (!string.IsNullOrEmpty(str))
             {
-                if (!string.IsNullOrEmpty(item))
+                var key = str.Split(ch);
+                foreach (var item in key)
                 {
-                    list.Add(item);
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        list.Add(item);
+                    }
                 }
             }
+            
             return list;
+        }
+        public static List<string[]> ListToTable(this List<string> List,int Count)
+        {
+            var value = new string[Count];
+            int Index = 0;
+            var Reborn = new List<string[]>();
+            foreach (var item in List)
+            {
+                if (Index == Count)
+                {
+                    Reborn.Add(value);
+                    value = new string[Count];
+                    Index = 0;
+                }
+                value[Index] = item;
+                Index++;
+            }
+            if (!string.IsNullOrEmpty(value[0]))
+            {
+                Reborn.Add(value);
+            }
+            return Reborn;
         }
 
         public static bool IsChinese(this string str)

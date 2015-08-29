@@ -1,0 +1,57 @@
+﻿@using LoowooTech.Jurisdiction.Models
+@{
+    ViewBag.Title = "申请历史";
+    Layout = "~/Views/Member/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.List;
+    int SerialNumber = 1;
+}
+
+<div style="clear:both;overflow:hidden;margin-bottom:10px;">
+    <form class="form-inline" style="float:right;">
+
+    </form>
+</div>
+<table class="table table-bordered">
+    <tr>
+        <th>序号</th>
+        <th>申请组</th>
+        <th>申请时间</th>
+        <th>申请状态</th>
+        <th>审核人</th>
+        <th>审核时间</th>
+        <th>备注、理由</th>
+    </tr>
+    @foreach (var item in List)
+    {
+        <tr>
+            <td>@(SerialNumber++)</td>
+            <td>@(item.GroupName)</td>
+            <td>@(item.CreateTime)</td>
+            @switch (item.Status)
+            {
+                case CheckStatus.Wait:
+                    <td>-</td>
+                    <td class="text-warning"><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
+                    break;
+                case CheckStatus.Agree:
+                <td>@(item.CheckTime)</td>
+                <td class="text-success"><span class="glyphicon glyphicon-ok-sign">审核通过</span></td>
+                <td>@(item.DateDiff)</td>
+                    break;
+                case CheckStatus.Disagree:
+                <td>@(item.CheckTime)</td>
+                <td class="text-danger"><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
+                <td>-</td>
+                    break;
+            }
+               
+        </tr>
+    }
+    <tr>
+        <td colspan="9">
+            @Html.Partial("_pagination",ViewBag.Page as object)
+        </td>
+    </tr>
+</table>
+
+

@@ -57,7 +57,7 @@ namespace LoowooTech.Jurisdiction.Models
         {
             get
             {
-                return MaturityTime.Subtract(CheckTime);
+                return MaturityTime.Subtract(DateTime.Now);
             }
         }
         [NotMapped]
@@ -70,6 +70,14 @@ namespace LoowooTech.Jurisdiction.Models
         }
     }
 
+    public class DataBookFilter
+    {
+        public string  Name { get; set; }
+        public string Checker { get; set; }
+        public CheckStatus Status { get; set; }
+        public Page Page { get; set; }
+    }
+
     public enum CheckStatus
     {
         [Description("等待审核")]
@@ -77,6 +85,8 @@ namespace LoowooTech.Jurisdiction.Models
         [Description("同意")]
         Agree,
         [Description("不同意")]
-        Disagree
+        Disagree,
+        [Description("全部")]
+        All
     }
 }

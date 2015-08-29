@@ -60,17 +60,16 @@ namespace LoowooTech.Jurisdiction.Manager
             }
             return list;
         }
-        public List<DataBook> Get(List<string> GroupNames)
+        public List<DataBook> Get(List<string> GroupNames,CheckStatus status)
         {
             var list = new List<DataBook>();
             foreach (var item in GroupNames)
             {
                 var entry = Get(item);
-                if (entry != null)
+                if (entry != null&&entry.Status==status)
                 {
                     list.Add(entry);
                 }
-                //list.Add(Get(item));
             }
             return list;
         }
@@ -98,10 +97,44 @@ namespace LoowooTech.Jurisdiction.Manager
                 return db.DataBooks.Where(e => e.Name == Name).OrderByDescending(e => e.ID).ToList();
             }
         }
- 
-        public void Check(int ID, string Reason,string Checker, bool? Check,int? Day,int? Month,int ?Year)
+
+        public List<DataBook> Get(DataBookFilter Filter)
         {
-            if (!Check.HasValue||string.IsNullOrEmpty(Checker))
+            using (var db = GetJURDataContext())
+            {
+                var query = db.DataBooks.AsQueryable();
+                switch (Filter.Status)
+                {
+                    case CheckStatus.Agree:
+                    case CheckStatus.Disagree:
+                    case CheckStatus.Wait:
+                        query = query.Where(e => e.Status == Filter.Status);
+                        break;
+                    case CheckStatus.All:
+                    default:
+                        break;
+                }
+                if (!string.IsNullOrEmpty(Filter.Name))
+                {
+                    query = query.Where(e => e.Name == Filter.Name);
+                }
+                if (!string.IsNullOrEmpty(Filter.Checker))
+                {
+                    query = query.Where(e => e.Checker == Filter.Checker);
+                }
+
+                if (Filter.Page != null)
+                {
+                    Filter.Page.RecordCount = query.Count();
+                    query = query.OrderBy(e => e.ID).Skip(Filter.Page.PageSize * (Filter.Page.PageIndex - 1)).Take(Filter.Page.PageSize);
+                }
+                return query.ToList();
+            }
+        }
+ 
+        public void Check(int ID, string Reason,string Checker,int? Day,int? Month,int ?Year,CheckStatus status)
+        {
+            if (string.IsNullOrEmpty(Checker))
             {
                 return;
             }
@@ -110,7 +143,7 @@ namespace LoowooTech.Jurisdiction.Manager
             {
                 throw new ArgumentException("内部服务器错误!");
             }
-            if (Check.Value == true)
+            if (status==CheckStatus.Agree)
             {
                 try
                 {
@@ -121,20 +154,40 @@ namespace LoowooTech.Jurisdiction.Manager
                     throw new ArgumentException(ex.Message);
                 }
             }
-            Book.Checker = Checker;
-            Book.Reason = Reason;
-            Book.CheckTime = DateTime.Now;
-            try
+            if (status != CheckStatus.Wait)
             {
-                Edit(Book);
+                Book.Checker = Checker;
+                Book.Reason = Reason;
+                Book.CheckTime = DateTime.Now;
+                Book.Status = status;
+                DateTime time = Book.CheckTime;
+                if (Day.HasValue)
+                {
+                    time = time.AddDays(Day.Value);
+                }
+                if (Month.HasValue)
+                {
+                    time = time.AddMonths(Month.Value);
+                }
+                if (Year.HasValue)
+                {
+                    time = time.AddYears(Year.Value);
+                }
+                TimeSpan span = time.Subtract(Book.CheckTime);
+                if (span.Days == 0 && span.Minutes == 0 && span.Hours == 0 && span.Seconds == 0)
+                {
+                    time = new DateTime(9999, 12, 31, 12, 00, 00);
+                }
+                Book.MaturityTime = time;
+                try
+                {
+                    Edit(Book);
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-           
-
-
         }
 
         public void Examine(string Name,out string error)

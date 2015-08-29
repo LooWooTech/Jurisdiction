@@ -1,51 +1,24 @@
 ﻿@{
     ViewBag.Title = "首页";
     Layout = "~/Views/Admin/_Layout.cshtml";
-    List<LoowooTech.Jurisdiction.Models.Group> Groups = ViewBag.Groups;
-    List<LoowooTech.Jurisdiction.Models.User> Users = ViewBag.Users;
-    int SerialNumber = 1;
 }
-<div style="position:relative;">
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#Users" data-toggle="tab"><i class="glyphicon glyphicon-user"></i>&nbsp;用户</a></li>
-        <li class=""><a href="#Group" data-toggle="tab"><i class="glyphicon glyphicon-th"></i>&nbsp;组群</a></li>
-    </ul>
+
+<div class="col-lg-6">
+    <blockquote>
+        <p><i class="glyphicon glyphicon-user"></i>&nbsp; <a href="/Admin/User">用户</a></p>
+        <small>查看所有用户的姓名、账号、过期时间以及权限组的信息</small>
+    </blockquote>
+</div>
+<div class="col-lg-6">
+    <blockquote >
+        <p><i class="glyphicon glyphicon-plane"></i>&nbsp;<a href="/Admin/Group">组群</a></p>
+        <small>查看所有组以及组之间的关系</small>
+    </blockquote>
+</div>
+<div class="col-lg-6">
+    <blockquote>
+        <p><i class="glyphicon glyphicon-cog">&nbsp;</i><a href="/Admin/Impower">授权</a></p>
+        <small>查看当前域中授权信息以及对用户的授权</small>
+    </blockquote>
 </div>
 
-<div class="tab-content">
-    <div class="tab-pane fade active in" id="Users">
-        <table class="table table-bordered">
-            <tr>
-                <th>序号</th>
-                <th>姓名</th>
-                <th>用户名</th>
-                <th>过期时间</th>
-                <th>所属组</th>
-                <th>快捷键</th>
-            </tr>
-            @foreach (var user in Users)
-            {
-            <tr>
-                <td>@(SerialNumber++)</td>
-                <td>@(user.Name)</td>
-                <td>@(user.Account)</td>
-                <td></td>
-                <td>
-                    @foreach (var str in user.Group)
-                        {
-                        @(str + ";");
-                        }
-                </td>
-                <td>
-                    <a href="/Admin/Delete?Name=@user.Name&&Flag=@(true)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>&nbsp; 删除</a>
-                </td>
-            </tr>
-            }
-        </table>
-    </div>
-    <div class="tab-pane fade " id="Group">
-       
-       
-    </div>
-   
-</div>

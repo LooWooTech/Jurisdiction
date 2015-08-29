@@ -30,6 +30,12 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             ViewBag.User = Core.UserManager.Get(Identity);
             ViewBag.ListGroup = Core.ADManager.GetListGroup();
             ViewBag.Mine = Core.DataBookManager.GetMine(Identity.Name);
+            string error = string.Empty;
+            Core.DataBookManager.Examine(Identity.Name, out error);
+            if (!string.IsNullOrEmpty(error))
+            {
+                throw new ArgumentException("更新权限列表失败：" + error);
+            }
             return View();
         }
         public ActionResult GetGroupList(string Boss)
@@ -64,6 +70,20 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         {
             var list = Core.ADManager.GetListGroup().Select(e => e.Name).ToList();
             return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult History(CheckStatus status=CheckStatus.All,int page=1)
+        {
+            var filter = new DataBookFilter
+            {
+                Name=Identity.Name,
+                Status = status,
+                Page = new Page(page)
+            };
+            ViewBag.List = Core.DataBookManager.Get(filter);
+            ViewBag.Page = filter.Page;
+           // ViewBag.List = Core.DataBookManager.GetMine(Identity.Name);
+            return View();
         }
 
 

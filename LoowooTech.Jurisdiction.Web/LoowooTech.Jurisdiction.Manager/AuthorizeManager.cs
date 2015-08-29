@@ -52,14 +52,44 @@ namespace LoowooTech.Jurisdiction.Manager
                 return authorize.ID;
             }
         }
-
-        public Authorize Get(HttpContextBase context)
+        public void Edit(Authorize authorize)
         {
-            return new Authorize()
+            using (var db = GetJURDataContext())
             {
-                GroupName = context.Request.Form["GroupName"],
-                Manager = context.Request.Form["Manager"]
-            };
+                var entry = db.Authorizes.Find(authorize.ID);
+                if (entry != null)
+                {
+                    db.Entry(entry).CurrentValues.SetValues(authorize);
+                    db.SaveChanges();
+                }
+            }
+        }
+        public Authorize Get(int ID)
+        {
+            using (var db = GetJURDataContext())
+            {
+                return db.Authorizes.Find(ID);
+            }
+        }
+
+        public Authorize Get(HttpContextBase context,int ID=0)
+        {
+            if (ID == 0)
+            {
+                return new Authorize()
+                {
+                    GroupName = context.Request.Form["GroupName"],
+                    Manager = context.Request.Form["Manager"]
+                };
+            }
+            var authorize = Get(ID);
+            if (authorize == null)
+            {
+                throw new ArgumentException("未找到权限列表");
+            }
+            authorize.GroupName = context.Request.Form["GroupName"];
+            return authorize;
+            
         }
 
         public void Screen(string[] Origin,string sAMAccountName, out List<string> None, out List<string> Have)

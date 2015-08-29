@@ -1,4 +1,6 @@
-﻿@{
+﻿@using LoowooTech.Jurisdiction.Models
+@using LoowooTech.Jurisdiction.Common
+@{
     ViewBag.Title = "申请中心";
     Layout = "~/Views/Manager/_Layout.cshtml";
     List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.Wait;
@@ -46,12 +48,17 @@
                 <div class="form-group">
                     <label for="Check" class="control-label col-lg-3">是否同意</label>
                     <div class="col-lg-6">
-                        <label class="radio-inline">
-                            <input type="radio" value="true" name="Check" />同意
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" value="false" name="Check" />不同意
-                        </label>
+                        @foreach (CheckStatus status in Enum.GetValues(typeof(CheckStatus)))
+                        {
+                            if (status == CheckStatus.Wait||status==CheckStatus.All)
+                            {
+                                continue;
+                            }
+                            var value=(int)status;
+                            <label class="radio-inline">
+                                <input type="radio" value="@value" name="status" />@(status.GetDescription())
+                            </label>
+                        }
                     </div>
                 </div>
                 <div class="form-group">
@@ -96,6 +103,7 @@
                 <th>申请组</th>
                 <th>申请时间</th>
                 <th>申请状态</th>
+                <th>权限时间</th>
                 <th>备注、理由</th>
             </tr>
             @foreach (var item in Finishs)
@@ -106,8 +114,17 @@
                     <td>@(item.GroupName)</td>
                     <td>@(item.CreateTime)</td>
                     <td>
-                       
+                       @switch (item.Status)
+                       {
+                           case CheckStatus.Agree:
+                               <i class="glyphicon glyphicon-ok"></i>
+                               break;
+                           case CheckStatus.Disagree:
+                           <i class="glyphicon glyphicon-remove"></i>
+                               break;
+                       }
                     </td>
+                    <td>@(item.DateDiff)</td>
                     <td>@(item.Reason)</td>
                 </tr>
             }

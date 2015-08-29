@@ -96,18 +96,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             return View();
         }
         
-        [HttpPost]
-        public ActionResult Manager(int ID, string Reason, bool? Check,int ?Day,int ? Month,int ?Year)
-        {
-            Core.DataBookManager.Check(ID, Reason, Identity.Name, Check,Day,Month,Year);
-            ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
-            //待审批列表
-            //审批列表
-            ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
-            //我的申请
-            ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
-            return View();
-        }
 
         [HttpPost]
         public ActionResult CreateUserGroup(string Name,string Description)
@@ -151,6 +139,20 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             ViewBag.List = Core.AuthorizeManager.GetList();
             ViewBag.Groups = ADController.GetGroupList();
             return View();
+        }
+        [HttpPost]
+        public ActionResult ImpowerEdit(int ID)
+        {
+            try
+            {
+                Core.AuthorizeManager.Edit(Core.AuthorizeManager.Get(HttpContext, ID));
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+
+            return RedirectToAction("Impower");
         }
 
 

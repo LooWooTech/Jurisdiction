@@ -3,33 +3,37 @@
     ViewBag.Title = "申请权限";
     Layout = "~/Views/Member/_Layout.cshtml";
     LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
-    List<LoowooTech.Jurisdiction.Models.Group> List = ViewBag.ListGroup;
     List<LoowooTech.Jurisdiction.Models.DataBook> MList = ViewBag.Mine;
     List<string> ManagerList = ViewBag.ManagerList;
-    int SerialNumber = 1;
     int Serial = 1;
 }
 
 <div style="position:relative">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#Apply" data-toggle="tab"><i class="glyphicon glyphicon-glass"></i>&nbsp;申请中心</a></li>
+        <li class="active"><a href="#Message" data-toggle="tab"><i class="glyphicon glyphicon-user"></i>&nbsp;基础信息</a></li>
+        <li class=""><a href="#Apply" data-toggle="tab"><i class="glyphicon glyphicon-glass"></i>&nbsp;申请中心</a></li>
         <li class=""><a href="#Mine" data-toggle="tab"><i class="glyphicon glyphicon-leaf"></i>&nbsp; 我的申请</a></li>
     </ul>
 </div>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="Apply">
+    <div class="tab-pane fade active in" id="Message">
         <div class="alert alert-info" role="alert">
+            您好！@(User.Name):
+                        @if (User.Group != null)
+                        {
 
-            @if (User.Group != null)
-            {
-                <p>当前用户隶属于:</p>
-                foreach (var group in User.Group)
-                {
-                    <p>@(SerialNumber++):@(group)</p>
-                }
+                            <p>
+                                您当前隶属于:
+                                @foreach (var group in User.Group)
+                                {
+                                <span class="badge">@(group)</span>
+                                }
+                            </p>
             }
         </div>
+    </div>
+    <div class="tab-pane fade" id="Apply"> 
         <form class="form-horizontal" method="post" action="">
             <div class="form-group">
                 <label for="" class="control-label col-lg-3">管理者：</label>
@@ -55,8 +59,6 @@
             </div>
         </form>
     </div>
-
-
     <div class="tab-pane fade" id="Mine">
         <table class="table table-bordered">
             <tr>
