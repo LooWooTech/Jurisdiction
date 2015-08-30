@@ -41,7 +41,7 @@ namespace LoowooTech.Jurisdiction.Common
             
             return list;
         }
-        public static List<string[]> ListToTable(this List<string> List,int Count)
+        public static List<string[]> ListToTable(this List<string> List,int Count=2)
         {
             var value = new string[Count];
             int Index = 0;

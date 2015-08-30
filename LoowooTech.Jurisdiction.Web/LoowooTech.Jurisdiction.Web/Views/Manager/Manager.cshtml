@@ -4,20 +4,15 @@
     ViewBag.Title = "申请中心";
     Layout = "~/Views/Manager/_Layout.cshtml";
     List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.Wait;
-    List<LoowooTech.Jurisdiction.Models.DataBook> Finishs = ViewBag.Finishs;
-    List<LoowooTech.Jurisdiction.Models.DataBook> Mines = ViewBag.Mines;
-    Dictionary<string, List<LoowooTech.Jurisdiction.Models.User>> DICT = ViewBag.DICT;
-    int SeriaNumber = 1;
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.User>> GDict = ViewBag.DGroups;
+    int Index=1;
     int Serial = 1;
-    int Number = 1;
 }
 
 <div style="position:relative;">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#Wait" data-toggle="tab"><i class="glyphicon glyphicon-fire"></i>&nbsp;待审核&nbsp;</a></li>
         <li class=""><a href="#Manager" data-toggle="tab"><i class="glyphicon glyphicon-heart"></i>&nbsp; 我的管理&nbsp;</a></li>
-        <li class=""><a href="#Finish" data-toggle="tab"><i class="glyphicon glyphicon-leaf"></i>&nbsp;已审核&nbsp;</a></li>
-        <li class=""><a href="#Mine" data-toggle="tab"><i class="glyphicon glyphicon-bookmark"></i>&nbsp;我的申请&nbsp;</a></li>
     </ul>
 </div>
 
@@ -93,66 +88,45 @@
         }
     </div>
     <div class="tab-pane fade" id="Manager">
+        <div class="panel-group" role="tablist"  id="accordion" aria-multiselectable="true">
+            @foreach (var key in GDict.Keys)
+            {
+                Serial = 1;
+                if (Serial % 2 == 0)
+                {
+                    
+                }
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="@(Index)">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(Index)" aria-expanded="true" aria-controls="#collapse@(Index)">
+                                @(key)
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse@(Index)" class="panel-collapse collapse " role="tabpanel" aria-labelledby="@(Index)">
+                        <div class="panel-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>序号</th>
+                                    <th>姓名</th>
+                                    <th>用户名</th>
 
-    </div>
-    <div class="tab-pane fade" id="Finish">
-        <table class="table table-bordered">
-            <tr>
-                <th>序号</th>
-                <th>申请人</th>
-                <th>申请组</th>
-                <th>申请时间</th>
-                <th>申请状态</th>
-                <th>权限时间</th>
-                <th>备注、理由</th>
-            </tr>
-            @foreach (var item in Finishs)
-            {
-                <tr>
-                    <td>@(SeriaNumber++)</td>
-                    <td>@(item.Name)</td>
-                    <td>@(item.GroupName)</td>
-                    <td>@(item.CreateTime)</td>
-                    <td>
-                       @switch (item.Status)
-                       {
-                           case CheckStatus.Agree:
-                               <i class="glyphicon glyphicon-ok"></i>
-                               break;
-                           case CheckStatus.Disagree:
-                           <i class="glyphicon glyphicon-remove"></i>
-                               break;
-                       }
-                    </td>
-                    <td>@(item.DateDiff)</td>
-                    <td>@(item.Reason)</td>
-                </tr>
+                                </tr>
+                                @foreach (var item in GDict[key])
+                                {
+                                    <tr>
+                                        <td>@(Serial++)</td>
+                                        <td>@(item.Name)</td>
+                                        <td>@(item.Account)</td>
+                                    </tr>
+                                }
+                            </table>    
+                        </div>
+                    </div>
+                </div>
+                Index++;
             }
-        </table>
-    </div>
-    <div class="tab-pane fade" id="Mine">
-        <table class=" table table-bordered">
-            <tr>
-                <th>序号</th>
-                <th>审核人</th>
-                <th>审核时间</th>
-                <th>审核结果</th>
-                <th>备注、理由</th>
-            </tr>
-            @foreach (var item in Mines)
-            {
-                <tr>
-                    <td>@(Serial++)</td>
-                    <td>@(item.Checker)</td>
-                    <td>@(item.CheckTime)</td>
-                    <td>
-                       
-                    </td>
-                    <td>
-                        @(item.Reason)
-                    </td>
-                </tr>
-            }
-        </table>
+        </div>
     </div>
 </div>

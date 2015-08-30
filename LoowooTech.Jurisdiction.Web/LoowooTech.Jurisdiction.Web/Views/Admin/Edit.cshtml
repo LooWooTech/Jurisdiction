@@ -3,8 +3,7 @@
            
 @{
     var MyList = Model.GroupName.StrToList(',');
-    List<string> listOne = ViewBag.Groups;
-    var ListTwo = listOne.ListToTable(2);
+    List<string[]> ListTwo = ViewBag.Groups;
 }
 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#@(Model.ID)"><i class="glyphicon glyphicon-edit"></i>&nbsp; 编辑权限</button>
 <div class="modal fade" id="@(Model.ID)" tabindex="-1" role="dialog">

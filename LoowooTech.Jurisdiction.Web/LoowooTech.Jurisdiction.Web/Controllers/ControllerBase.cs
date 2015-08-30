@@ -1,5 +1,6 @@
 ﻿using LoowooTech.Jurisdiction.Common;
 using LoowooTech.Jurisdiction.Manager;
+using LoowooTech.Jurisdiction.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,10 +62,23 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
         protected ActionResult HtmlResult(List<string> html)
         {
+            var values = html.ListToTable();
+            
             string str = string.Empty;
-            foreach (var item in html)
+            foreach (var item in values)
             {
-                str += "<label class='checkbox-inline'><input type='checkbox' name='Group' value='" + item + "' />" + item + "</label>";
+                string st = string.Empty;
+                st += "<tr>";
+                foreach (var entry in item)
+                {
+                    if (string.IsNullOrEmpty(entry))
+                    {
+                        continue;
+                    }
+                    st += "<td><label class='checkbox-inline'><input type='checkbox' name='Group' value='" + entry + "' />" + entry + "</label></td>";
+                }
+                st += "</tr>";
+                str += st;
             }
             return Content(str);
         }

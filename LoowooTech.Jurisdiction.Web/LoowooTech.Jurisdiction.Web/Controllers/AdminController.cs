@@ -115,7 +115,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public ActionResult Impower()
         {
             ViewBag.List = Core.AuthorizeManager.GetList();
-            ViewBag.Groups = ADController.GetGroupList();
+            ViewBag.Groups = ADController.GetGroupList().ListToTable();
             return View();
         }
 
@@ -137,7 +137,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
                 throw new ArgumentException(ex.Message);
             }
             ViewBag.List = Core.AuthorizeManager.GetList();
-            ViewBag.Groups = ADController.GetGroupList();
+            ViewBag.Groups = ADController.GetGroupList().ListToTable();
             return View();
         }
         [HttpPost]

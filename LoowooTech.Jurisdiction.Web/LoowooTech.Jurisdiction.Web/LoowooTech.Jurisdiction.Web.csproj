@@ -172,6 +172,7 @@
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="SystemInfo.xml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -297,6 +298,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_pagination.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\Jurisdiction.pubxml" />
+    <Content Include="Views\Manager\CHistory.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

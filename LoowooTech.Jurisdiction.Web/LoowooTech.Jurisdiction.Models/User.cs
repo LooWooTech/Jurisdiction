@@ -21,6 +21,7 @@ namespace LoowooTech.Jurisdiction.Models
         /// 隶属组
         /// </summary>
         public List<string> Group { get; set; }
+        public List<Group> MGroup { get; set; }
         public GroupType Type { get; set; }
         /// <summary>
         /// 管理哪些组

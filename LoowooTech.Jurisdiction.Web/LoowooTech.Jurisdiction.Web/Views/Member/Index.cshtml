@@ -1,6 +1,35 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "首页";
     Layout = "~/Views/Member/_Layout.cshtml";
+    LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
+    int SerialNumber = 1;
 }
 
-<h2>Index</h2>
+ 您好！@(User.Name):
+@if (User.Group != null)
+{
+
+    <p style="line-height:250%">
+        您当前隶属于:
+        <a href="/Member/Apply" class="btn btn-success" style="float:right">开始申请</a>
+        <table class="table table-bordered">
+            <tr>
+                <th>序号</th>
+                <th>组名称</th>
+                <th>描述</th>
+            </tr>
+            @foreach (var item in User.MGroup)
+            {
+                <tr>
+                    <td>@(SerialNumber++)</td>
+                    <td>
+                        <span class="badge">@(item.Name)</span> 
+                    </td>
+                    <td>@(item.Descriptions)</td>
+                </tr>
+            }
+        </table>
+    </p>
+}
+
+

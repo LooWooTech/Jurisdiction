@@ -190,6 +190,12 @@ namespace LoowooTech.Jurisdiction.Manager
             }
         }
 
+
+        /// <summary>
+        /// 更新权限列表
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="error"></param>
         public void Examine(string Name,out string error)
         {
             var list = GetMine(Name);

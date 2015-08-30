@@ -22,7 +22,7 @@ namespace LoowooTech.Jurisdiction.Manager
             //};
 
             var user = ADController.GetUser(Name);
-            user.Managers = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(Name));
+            user.Managers = Core.AuthorizeManager.GetList(user.Name);
             if (user.Group.Contains("Administrators"))
             {
                 user.Type = GroupType.Administrator;
@@ -47,7 +47,8 @@ namespace LoowooTech.Jurisdiction.Manager
             return new User()
             {
                 Name = Identity.Name,
-                Group = Core.ADManager.Tranlate(Identity.Groups.StrToList(';'),"group")
+                Group = Core.ADManager.Tranlate(Identity.Groups.StrToList(';'),"group"),
+                MGroup=ADController.GetGroupList(Identity.Groups.StrToList(';'))
             };
         }
         public User Login(string Name, string Password)

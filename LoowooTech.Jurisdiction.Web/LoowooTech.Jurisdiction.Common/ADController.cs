@@ -37,6 +37,8 @@ namespace LoowooTech.Jurisdiction.Common
                 }
             }
         }
+
+#region Common  通用
         private static DirectoryEntry GetDirectoryObject(string Name, string Password)
         {
             try
@@ -65,10 +67,7 @@ namespace LoowooTech.Jurisdiction.Common
         {
             return Get("(&(name=" + Name + "))"); 
         }
-        private static DirectoryEntry GetUserObject(string sAMAccountName)
-        {
-            return Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))");
-        }
+        
         private static SearchResult SearchOne(string Filter, DirectoryEntry Entry=null)
         {
             if (Entry == null)
@@ -145,6 +144,19 @@ namespace LoowooTech.Jurisdiction.Common
                 return string.Empty;
             }
         }
+        private  static List<string> GetList(string Filter)
+        {
+            var list = new List<string>();
+            var collection = SearchAll(Filter);
+            foreach (SearchResult item in collection)
+            {
+                if (!IsIgnore(GetDistinguishedName(item)))
+                {
+                    list.Add(GetProperty(item, "name"));
+                }
+            }
+            return list;
+        }
         private static string GetDistinguishedName(SearchResult result)
         {
             return GetProperty(result, "distinguishedName");
@@ -174,26 +186,14 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return false;
         }
-        private  static List<string> GetList(string Filter)
+        
+
+#endregion
+
+#region User 用户
+        private static DirectoryEntry GetUserObject(string sAMAccountName)
         {
-            var list = new List<string>();
-            var collection = SearchAll(Filter);
-            foreach (SearchResult item in collection)
-            {
-                if (!IsIgnore(GetDistinguishedName(item)))
-                {
-                    list.Add(GetProperty(item, "name"));
-                }
-            }
-            return list;
-        }
-        public static List<string> GetGroupList()
-        {
-            return GetList("(&(objectCategory=group)(objectClass=group))");
-        }
-        public static List<string> GetUserList()
-        {
-            return GetList("(&(objectCategory=person)(objectClass=user))");
+            return Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))");
         }
         public static bool Login(string Name, string Password)
         {
@@ -206,15 +206,62 @@ namespace LoowooTech.Jurisdiction.Common
             var user = GetUserObject(Name);
             return new User()
             {
-                Name = GetProperty(user, "sAMAccountName"),
+                Name = GetProperty(user, "name"),
+                Account=GetProperty(user,"sAMAccountName"),
                 Group = Extract(GetAllProperty(user, "memberOf"), "group")
             };
+        }
+        public static List<string> GetUserList()
+        {
+            return GetList("(&(objectCategory=person)(objectClass=user))");
         }
         public static string GetNameBysAMAccountName(string sAMAccountName)
         {
             return GetProperty(Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))"), "name");
         }
+        private static string GetsAMAccountByName(string Name)
+        {
+            return GetProperty(Get("(&(objectCategory=person)(objectClass=user)(name=" + Name + "))"), "sAMAccountName");
+        }
+        /// <summary>
+        /// 通过组名获取当前组中的用户
+        /// </summary>
+        /// <param name="GroupName">组名</param>
+        /// <returns></returns>
+        public static List<User> GetUserList(string GroupName)
+        {
+            var list = new List<User>();
+            var groupEntry = GetGroupObject(GroupName);
+            var userlist = Extract(GetAllProperty(groupEntry, "member"), "person");
+            foreach (var item in userlist)
+            {
+                list.Add(GetUser(GetsAMAccountByName(item)));
+            }
+            return list;
+        }
 
+        
+
+#endregion
+
+#region Group 组
+
+        private static DirectoryEntry GetGroupObject(string GroupName)
+        {
+            return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
+        }
+
+        public static List<string> GetGroupList()
+        {
+            return GetList("(&(objectCategory=group)(objectClass=group))");
+        }
+
+        /// <summary>
+        /// 判断用户Name是否在组GroupName中
+        /// </summary>
+        /// <param name="GroupName"></param>
+        /// <param name="Name"></param>
+        /// <returns></returns>
         public static bool IsMember(string GroupName, string Name)
         {
             var GEntry = GetDirectoryObject(GroupName);
@@ -225,5 +272,48 @@ namespace LoowooTech.Jurisdiction.Common
             string UserDistinguishedName = GetDistinguishedName(Name);
             return GetAllProperty(GEntry, "member").Contains(UserDistinguishedName) ? true : false;
         }
+        public static Group GetGroup(string GroupName)
+        {
+            var Group = GetGroupObject(GroupName);
+            return new Group()
+            {
+                Name = GetProperty(Group, "name"),
+                Descriptions = GetProperty(Group, "description")
+            };
+        }
+        public static List<Group> GetGroupList(List<string> GroupsNames)
+        {
+            var list = new List<Group>();
+            foreach (var item in GroupsNames)
+            {
+                list.Add(GetGroup(item));
+            }
+            return list;
+
+        }
+        public static Dictionary<string, List<User>> GetGroupDict(List<string> Groups)
+        {
+            var dict = new Dictionary<string, List<User>>();
+            foreach (var item in Groups)
+            {
+                if (dict.ContainsKey(item))
+                {
+                    continue;
+                }
+                dict.Add(item, GetUserList(item));
+            }
+            return dict;
+        }
+#endregion
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
     }
 }

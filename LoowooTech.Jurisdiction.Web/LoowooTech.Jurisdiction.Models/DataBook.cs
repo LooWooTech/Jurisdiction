@@ -52,6 +52,7 @@ namespace LoowooTech.Jurisdiction.Models
         /// 原因 备注
         /// </summary>
         public string Reason { get; set; }
+        public bool Label { get; set; }
         [NotMapped]
         public TimeSpan Span
         {

@@ -27,21 +27,9 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(Identity.Name));
             //获取当前管理组的权限审核列表
             ViewBag.Wait = Core.DataBookManager.Get(groups,CheckStatus.Wait);
-            //获取我审核的列表（通过Checker==Identity.Name）
 
+            ViewBag.DGroups = ADController.GetGroupDict(groups);
 
-            //管理组以及对应组里面的成员
-            //ViewBag.DICT = Core.ADManager.GetManager(Identity.Name);
-            //审批列表
-            ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
-            //我的申请
-            ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
-            string error = string.Empty;
-            Core.DataBookManager.Examine(Identity.Name, out error);
-            if (!string.IsNullOrEmpty(error))
-            {
-                throw new ArgumentException("更新权限列表失败："+error);
-            }
             return View();
         }
         [HttpPost]
@@ -55,18 +43,22 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(Identity.Name));
             ViewBag.Wait = Core.DataBookManager.Get(groups,CheckStatus.Wait);
 
-            //管理组以及对应组里面的成员
-            //ViewBag.DICT = Core.ADManager.GetManager(Identity.Name);
-            //审批列表
-            ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
-            //我的申请
-            ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
-            string error = string.Empty;
-            Core.DataBookManager.Examine(Identity.Name, out error);
-            if (!string.IsNullOrEmpty(error))
+            ViewBag.DGroups = ADController.GetGroupDict(groups);
+            return View();
+        }
+
+
+
+        public ActionResult CHistory(int page=1) 
+        {
+            var filter = new DataBookFilter
             {
-                throw new ArgumentException("更新权限列表失败：" + error);
-            }
+                Status = CheckStatus.All,
+                Checker=Identity.Name,
+                Page = new Page(1)
+            };
+            ViewBag.List = Core.DataBookManager.Get(filter);
+            ViewBag.Page = filter.Page;
             return View();
         }
 

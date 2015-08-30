@@ -3,35 +3,45 @@
     ViewBag.Title = "申请权限";
     Layout = "~/Views/Member/_Layout.cshtml";
     LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
-    List<LoowooTech.Jurisdiction.Models.DataBook> MList = ViewBag.Mine;
     List<string> ManagerList = ViewBag.ManagerList;
     int Serial = 1;
+    int SerialNumber = 1;
 }
 
 <div style="position:relative">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#Message" data-toggle="tab"><i class="glyphicon glyphicon-user"></i>&nbsp;基础信息</a></li>
         <li class=""><a href="#Apply" data-toggle="tab"><i class="glyphicon glyphicon-glass"></i>&nbsp;申请中心</a></li>
-        <li class=""><a href="#Mine" data-toggle="tab"><i class="glyphicon glyphicon-leaf"></i>&nbsp; 我的申请</a></li>
     </ul>
 </div>
 
 <div class="tab-content">
     <div class="tab-pane fade active in" id="Message">
-        <div class="alert alert-info" role="alert">
-            您好！@(User.Name):
-                        @if (User.Group != null)
-                        {
+        您好！@(User.Name):
+        @if (User.Group != null)
+        {
 
-                            <p>
-                                您当前隶属于:
-                                @foreach (var group in User.Group)
-                                {
-                                <span class="badge">@(group)</span>
-                                }
-                            </p>
-            }
-        </div>
+            <p style="line-height:250%">
+                您当前隶属于:
+                <table class="table table-bordered">
+                    <tr>
+                        <th>序号</th>
+                        <th>组名称</th>
+                        <th>描述</th>
+                    </tr>
+                    @foreach (var item in User.MGroup)
+                    {
+                        <tr>
+                            <td>@(SerialNumber++)</td>
+                            <td>
+                                <span class="badge">@(item.Name)</span>
+                            </td>
+                            <td>@(item.Descriptions)</td>
+                        </tr>
+                    }
+                </table>
+            </p>
+        }
     </div>
     <div class="tab-pane fade" id="Apply"> 
         <form class="form-horizontal" method="post" action="">
@@ -48,8 +58,10 @@
             </div>
             <div class="form-group">
                 <label for="" class="control-label col-lg-3">申请组：</label>
-                <div class="col-lg-8" id="Group">
+                <div class="col-lg-8" >
+                    <table class="table" id="Group">
 
+                    </table>
                 </div>
             </div>
             <div class="form-group">
@@ -58,49 +70,6 @@
                 </div>
             </div>
         </form>
-    </div>
-    <div class="tab-pane fade" id="Mine">
-        <table class="table table-bordered">
-            <tr>
-                <th>序号</th>
-                <th>申请组名</th>
-                <th>申请时间</th>
-                <th>审核人</th>
-                <th>审核时间</th>
-                <th>审核状态</th>
-                <th>权限剩余时间</th>
-                <th>审核备注（原因）</th>
-            </tr>
-            @foreach (var item in MList)
-            {
-                <tr>
-                    <td>@(Serial++)</td>
-                    <td>@(item.GroupName)</td>
-                    <td>@(item.CreateTime)</td>
-                    <td>@(item.Checker)</td>
-                    
-                    @switch (item.Status)
-                    {
-                        case CheckStatus.Wait:
-                            <td></td>
-                            <td class="text-warning"><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
-                            <td>-</td>
-                            break;
-                        case CheckStatus.Agree:
-                        <td>@(item.CheckTime)</td>
-                            <td class="text-success"><span class="glyphicon glyphicon-ok-sign">审核通过</span></td>
-                            <td>@(item.DateDiff)</td>
-                            break;
-                        case CheckStatus.Disagree:
-                        <td>@(item.CheckTime)</td>
-                        <td class="text-danger"><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
-                        <td>-</td>
-                            break;
-                    }
-                    <td>@(item.Reason)</td>
-                </tr>
-            }
-        </table>
     </div>
 </div>
 

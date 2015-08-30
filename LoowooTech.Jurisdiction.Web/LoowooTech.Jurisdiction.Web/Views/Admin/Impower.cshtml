@@ -3,8 +3,7 @@
     ViewBag.Title = "授权";
     Layout = "~/Views/Admin/_Layout.cshtml";
     List<LoowooTech.Jurisdiction.Models.Authorize> list = ViewBag.List;
-    List<string> Groups = ViewBag.Groups;
-    var Reborn = Groups.ListToTable(2);
+    List<string[]> Reborn= ViewBag.Groups;
     int SerialNumber = 1;
 }
 <div style="position:relative;">
