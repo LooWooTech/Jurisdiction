@@ -1,11 +1,11 @@
-﻿@using LoowooTech.Jurisdiction.Models
-@{
+﻿@{
     ViewBag.Title = "申请权限";
-    Layout = "~/Views/Member/_Layout.cshtml";
+    Layout = "~/Views/Manager/_Layout.cshtml";
     LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
     List<string> ManagerList = ViewBag.ManagerList;
     int SerialNumber = 1;
 }
+
 
 <div style="position:relative">
     <ul class="nav nav-tabs">
@@ -17,7 +17,7 @@
 <div class="tab-content">
     <div class="tab-pane fade active in" id="Message">
         您好！@(User.Name):
-        @if (User.Group != null)
+        @if (User.MGroup != null)
         {
 
             <p style="line-height:250%">
@@ -42,7 +42,7 @@
             </p>
         }
     </div>
-    <div class="tab-pane fade" id="Apply"> 
+    <div class="tab-pane fade" id="Apply">
         <form class="form-horizontal" method="post" action="">
             <div class="form-group">
                 <label for="" class="control-label col-lg-3">管理者：</label>
@@ -57,10 +57,8 @@
             </div>
             <div class="form-group">
                 <label for="" class="control-label col-lg-3">申请组：</label>
-                <div class="col-lg-8" >
-                    <table class="table" id="Group">
-
-                    </table>
+                <div class="col-lg-8">
+                    <table class="table" id="Group"></table>
                 </div>
             </div>
             <div class="form-group">
@@ -87,11 +85,8 @@
                     $("#Group").empty().append(xmlhttp.responseText);
                 }
             }
-            xmlhttp.open("GET", "/Member/GetGroupList?Boss="+value, true);
+            xmlhttp.open("GET", "/Member/GetGroupList?Boss=" + value, true);
             xmlhttp.send();
         })
     })
 </script>
-
-
-

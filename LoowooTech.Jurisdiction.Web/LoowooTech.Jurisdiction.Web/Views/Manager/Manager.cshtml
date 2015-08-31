@@ -58,14 +58,17 @@
                 </div>
                 <div class="form-group">
                     <label for="" class="control-label col-lg-3">期限:</label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                         <div class="input-group">
-                            <input type="text" class="form-control" name="Year" />
-                            <div class="input-group-addon">年</div>
-                            <input type="text" class="form-control" name="Month" />
-                            <div class="input-group-addon">月</div>
-                            <input type="text" class="form-control" name="Day" />
-                            <div class="input-group-addon">天</div>
+                            <input type="number" class="form-control" name="Day" value="1"/>
+                            <div class="input-group-addon">天</div>              
+                        </div>  
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="true" name="Check"/>永不过期
+                            </label>
                         </div>
                     </div>
                 </div>

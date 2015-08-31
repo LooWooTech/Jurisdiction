@@ -17,6 +17,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
         public ActionResult Index()
         {
+            ViewBag.User = Core.UserManager.Get(Identity);
             return View();
         }
 
@@ -33,9 +34,9 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Manager(int ID, string Reason, int? Day,int ?Month,int ? Year,CheckStatus status=CheckStatus.Wait)
+        public ActionResult Manager(int ID, string Reason, int? Day,bool?Check,CheckStatus status=CheckStatus.Wait)
         {
-            Core.DataBookManager.Check(ID, Reason, Identity.Name,Day,Month,Year,status);
+            Core.DataBookManager.Check(ID, Reason, Identity.Name,Day,Check,status);
 
             ViewBag.ManageGroup = Core.AuthorizeManager.GetList(Identity.Name);
 
@@ -49,13 +50,66 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
 
 
-        public ActionResult CHistory(int page=1) 
+        public ActionResult CHistory(bool?Label,CheckStatus status=CheckStatus.All, string Name=null,string GroupName=null,int page=1) 
         {
             var filter = new DataBookFilter
             {
-                Status = CheckStatus.All,
+                Status = status,
                 Checker=Identity.Name,
-                Page = new Page(1)
+                Name=Name,
+                GroupName=GroupName,
+                Label=Label,
+                Page = new Page(page)
+            };
+            ViewBag.List = Core.DataBookManager.Get(filter);
+            ViewBag.Page = filter.Page;
+            var list=Core.DataBookManager.GetList(Identity.Name);
+            ViewBag.NList = list.GroupBy(e => e.Name).Select(e => e.Key).ToList();
+            ViewBag.GList = list.GroupBy(e => e.GroupName).Select(e => e.Key).ToList();
+            return View();
+        }
+
+        public ActionResult Apply()
+        {
+            ViewBag.ManagerList = Core.AuthorizeManager.GetAllManager();
+            ViewBag.User = Core.UserManager.Get(Identity);
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Apply(string Boss)
+        {
+            var groups = HttpContext.GetValue("Group");
+            List<string> None;
+            List<string> Have;
+            List<int> Indexs;
+            Core.AuthorizeManager.Screen(groups, Identity.Name, out None, out Have);
+            try
+            {
+                Indexs = Core.DataBookManager.Add(None, Identity.Name);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            ViewBag.Have = Have;
+            ViewBag.Book = Core.DataBookManager.Get(Indexs);
+            return View("MSuccess");
+        }
+
+        public ActionResult Gain()
+        {
+            var list = Core.ADManager.GetListGroup().Select(e => e.Name).ToList();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult History(CheckStatus status=CheckStatus.All,int page=1)
+        {
+            var filter = new DataBookFilter
+            {
+                Name = Identity.Name,
+                Status = status,
+                Page = new Page(page)
             };
             ViewBag.List = Core.DataBookManager.Get(filter);
             ViewBag.Page = filter.Page;

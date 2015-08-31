@@ -250,6 +250,15 @@ namespace LoowooTech.Jurisdiction.Common
         {
             return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
         }
+        private static List<string> GetGroupListBysAMAccountName(string sAMAccountName)
+        {
+            var userEntry = GetUserObject(sAMAccountName);
+            if (userEntry == null)
+            {
+                return null;
+            }
+            return Extract(GetAllProperty(userEntry, "memberOf"), "group");
+        }
 
         public static List<string> GetGroupList()
         {
@@ -281,8 +290,9 @@ namespace LoowooTech.Jurisdiction.Common
                 Descriptions = GetProperty(Group, "description")
             };
         }
-        public static List<Group> GetGroupList(List<string> GroupsNames)
+        public static List<Group> GetGroupList(string sAMAccountName)
         {
+            var GroupsNames = GetGroupListBysAMAccountName(sAMAccountName);
             var list = new List<Group>();
             foreach (var item in GroupsNames)
             {

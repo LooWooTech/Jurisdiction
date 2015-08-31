@@ -75,6 +75,8 @@ namespace LoowooTech.Jurisdiction.Models
     {
         public string  Name { get; set; }
         public string Checker { get; set; }
+        public string GroupName { get; set; }
+        public bool? Label { get; set; }
         public CheckStatus Status { get; set; }
         public Page Page { get; set; }
     }

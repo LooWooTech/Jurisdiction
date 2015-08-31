@@ -29,7 +29,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         {
             ViewBag.ManagerList = Core.AuthorizeManager.GetAllManager();
             ViewBag.User = Core.UserManager.Get(Identity);
-            ViewBag.ListGroup = Core.ADManager.GetListGroup();
             return View();
         }
         public ActionResult GetGroupList(string Boss)

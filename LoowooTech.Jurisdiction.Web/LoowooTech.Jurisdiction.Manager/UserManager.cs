@@ -47,8 +47,7 @@ namespace LoowooTech.Jurisdiction.Manager
             return new User()
             {
                 Name = Identity.Name,
-                Group = Core.ADManager.Tranlate(Identity.Groups.StrToList(';'),"group"),
-                MGroup=ADController.GetGroupList(Identity.Groups.StrToList(';'))
+                MGroup=ADController.GetGroupList(Identity.Name)
             };
         }
         public User Login(string Name, string Password)

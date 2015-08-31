@@ -51,6 +51,13 @@ namespace LoowooTech.Jurisdiction.Manager
                 return db.DataBooks.FirstOrDefault(e => e.GroupName == GroupName);
             }
         }
+        public List<DataBook> GetListByGroupName(string GroupName)
+        {
+            using (var db = GetJURDataContext())
+            {
+                return db.DataBooks.Where(e => e.GroupName == GroupName).ToList();
+            }
+        }
         public List<DataBook> Get(List<int> Indexs)
         {
             var list = new List<DataBook>();
@@ -65,10 +72,13 @@ namespace LoowooTech.Jurisdiction.Manager
             var list = new List<DataBook>();
             foreach (var item in GroupNames)
             {
-                var entry = Get(item);
-                if (entry != null&&entry.Status==status)
+                var glist = GetListByGroupName(item).Where(e=>e.Status==status).ToList();
+                if (glist != null)
                 {
-                    list.Add(entry);
+                    foreach (var entry in glist)
+                    {
+                        list.Add(entry);
+                    }
                 }
             }
             return list;
@@ -122,6 +132,14 @@ namespace LoowooTech.Jurisdiction.Manager
                 {
                     query = query.Where(e => e.Checker == Filter.Checker);
                 }
+                if (!string.IsNullOrEmpty(Filter.GroupName))
+                {
+                    query = query.Where(e => e.GroupName == Filter.GroupName);
+                }
+                if (Filter.Label.HasValue)
+                {
+                    query = query.Where(e => e.Label == Filter.Label.Value);
+                }
 
                 if (Filter.Page != null)
                 {
@@ -131,8 +149,20 @@ namespace LoowooTech.Jurisdiction.Manager
                 return query.ToList();
             }
         }
+
+
+        public List<DataBook> GetList(string Name)
+        {
+            using (var db = GetJURDataContext())
+            {
+                return db.DataBooks.Where(e => e.Checker == Name).ToList();
+            }
+        }
+
+
+        
  
-        public void Check(int ID, string Reason,string Checker,int? Day,int? Month,int ?Year,CheckStatus status)
+        public void Check(int ID, string Reason,string Checker,int? Day,bool?Check,CheckStatus status)
         {
             if (string.IsNullOrEmpty(Checker))
             {
@@ -165,18 +195,18 @@ namespace LoowooTech.Jurisdiction.Manager
                 {
                     time = time.AddDays(Day.Value);
                 }
-                if (Month.HasValue)
-                {
-                    time = time.AddMonths(Month.Value);
-                }
-                if (Year.HasValue)
-                {
-                    time = time.AddYears(Year.Value);
-                }
                 TimeSpan span = time.Subtract(Book.CheckTime);
                 if (span.Days == 0 && span.Minutes == 0 && span.Hours == 0 && span.Seconds == 0)
                 {
                     time = new DateTime(9999, 12, 31, 12, 00, 00);
+                }
+                if (Check.HasValue)
+                {
+                    if (Check.Value)
+                    {
+                        time = new DateTime(9999, 12, 31, 12, 00, 00);
+                    }
+                    
                 }
                 Book.MaturityTime = time;
                 try

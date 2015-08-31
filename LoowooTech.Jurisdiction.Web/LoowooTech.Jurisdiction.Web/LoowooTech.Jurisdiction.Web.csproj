@@ -302,6 +302,9 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\Jurisdiction.pubxml" />
     <Content Include="Views\Manager\CHistory.cshtml" />
+    <Content Include="Views\Manager\Apply.cshtml" />
+    <Content Include="Views\Manager\History.cshtml" />
+    <Content Include="Views\Manager\MSuccess.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
