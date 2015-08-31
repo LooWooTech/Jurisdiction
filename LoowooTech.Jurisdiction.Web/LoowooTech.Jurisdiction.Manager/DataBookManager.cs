@@ -151,17 +151,20 @@ namespace LoowooTech.Jurisdiction.Manager
         }
 
 
-        public List<DataBook> GetList(string Name)
+        public List<DataBook> GetList(string Name=null)
         {
             using (var db = GetJURDataContext())
             {
-                return db.DataBooks.Where(e => e.Checker == Name).ToList();
+                if (!string.IsNullOrEmpty(Name))
+                {
+                    return db.DataBooks.Where(e => e.Checker == Name).ToList();
+                }
+                else
+                {
+                    return db.DataBooks.ToList();
+                }
             }
         }
-
-
-        
- 
         public void Check(int ID, string Reason,string Checker,int? Day,bool?Check,CheckStatus status)
         {
             if (string.IsNullOrEmpty(Checker))

@@ -18,8 +18,6 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.Groups = Core.ADManager.GetListGroupExcept(null);
-            ViewBag.Users = Core.ADManager.GetListUser(null);
             return View();
         }
 
@@ -87,15 +85,42 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         /// <returns></returns>
         public ActionResult Manager()
         {
-            ViewBag.ManageGroup = Core.ADManager.GetManageGroup(Identity.Name);
-            //待审批列表
-            //审批列表
-            ViewBag.Finishs = Core.DataBookManager.GetFinish(Identity.Name);
-            //我的申请
-            ViewBag.Mines = Core.DataBookManager.GetMine(Identity.Name);
+            var groups = ADController.GetGroupList();
+            ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
+            ViewBag.DGroups = ADController.GetUserDict(groups);
             return View();
         }
-        
+
+        [HttpPost]
+        public ActionResult Manager(int ID, string Reason, int? Day, bool? Check, CheckStatus status = CheckStatus.Wait)
+        {
+            Core.DataBookManager.Check(ID, Reason, Identity.Name, Day, Check, status);
+            var groups = ADController.GetGroupList();
+            ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
+            ViewBag.DGroups = ADController.GetUserDict(groups);
+            return View();
+        }
+
+        public ActionResult History(bool?Label,CheckStatus status=CheckStatus.All,string Checker=null, string Name=null,string GroupName=null,int page=1)
+        {
+            var filter = new DataBookFilter
+            {
+                Status = status,
+                Checker = Checker,
+                Name = Name,
+                GroupName = GroupName,
+                Label = Label,
+                Page = new Page(page)
+            };
+            ViewBag.List = Core.DataBookManager.Get(filter);
+            ViewBag.Page = filter.Page;
+            var list = Core.DataBookManager.GetList();
+            ViewBag.NList = list.GroupBy(e => e.Name).Select(e => e.Key).ToList();
+            ViewBag.GList = list.GroupBy(e => e.GroupName).Select(e => e.Key).ToList();
+            ViewBag.CList = list.GroupBy(e => e.Checker).Select(e => e.Key).ToList();
+            return View();
+        }
+
 
         [HttpPost]
         public ActionResult CreateUserGroup(string Name,string Description)
@@ -115,7 +140,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public ActionResult Impower()
         {
             ViewBag.List = Core.AuthorizeManager.GetList();
-            ViewBag.Groups = ADController.GetGroupList().ListToTable();
+            ViewBag.Groups = ADController.GetGroupDict().DictToTable();
             return View();
         }
 

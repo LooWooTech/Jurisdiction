@@ -3,7 +3,7 @@
            
 @{
     var MyList = Model.GroupName.StrToList(',');
-    List<string[]> ListTwo = ViewBag.Groups;
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group[]>> Dict = ViewBag.Groups;
 }
 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#@(Model.ID)"><i class="glyphicon glyphicon-edit"></i>&nbsp; 编辑权限</button>
 <div class="modal fade" id="@(Model.ID)" tabindex="-1" role="dialog">
@@ -25,26 +25,44 @@
                     <div class="form-group">
                         <label for="" class="control-label col-lg-3">管理组：</label>
                         <div class="col-lg-8">
-                            <table class="table">
-                                @foreach (var item in ListTwo)
-                                {
-                                    <tr>
-                                        @foreach (var entry in item)
-                                        {
-                                            <td>
-                                                @if (!string.IsNullOrEmpty(entry))
-                                                {
-                                                    <label class="checkbox-inline">
-                                                        <input type="checkbox" name="GroupName" value="@(entry)" @(MyList.Contains(entry) ? "checked" : "") /> @(entry)
-                                                    </label>
-                                                }
-                                            </td>
-                                        }
-                                    </tr>
-                                    
-                                }
-                            </table>
-                           
+                           <div class="panel-group" id="Edit@(Model.ID)" role="tablist" aria-multiselectable="true">
+                               @foreach (var key in Dict.Keys)
+                               {
+                                   <div class="panel panel-default">
+                                       <div class="panel-heading" role="tab" id="Edit@(Model.ID)@(key)">
+                                           <h4 class="panel-title">
+                                               <a role="button" data-toggle="collapse" data-parent="#Edit@(Model.ID)" href="#collapse@(Model.ID)@(key)" aria-expanded="true" aria-controls="collapse@(Model.ID)@(key)">
+                                                   @(key)
+                                               </a>
+                                           </h4>
+                                       </div>
+                                       <div id="collapse@(Model.ID)@(key)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@(Model.ID)@(key)">
+                                           <div class="panel-body">
+                                               <table class="table">
+                                                   @foreach (var item in Dict[key])
+                                                   {
+                                                    <tr>
+                                                        @foreach (var entry in item)
+                                                        {
+                                                            <td>
+                                                                @if (entry != null && !string.IsNullOrEmpty(entry.Name))
+                                                                {
+                                                                    <label class="checkbox-inline">
+                                                                        <input type="checkbox" name="GroupName" value="@(entry.Name)" @(MyList.Contains(entry.Name) ? "checked" : "") /><strong>@(entry.Name)</strong> 
+                                                                    </label>
+                                                                    <br />
+                                                                    <small>@(entry.Descriptions)</small>
+                                                                }
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                   }
+                                               </table>
+                                           </div>
+                                       </div>
+                                   </div>
+                               }
+                           </div>
                         </div>
                     </div>
                 </div>

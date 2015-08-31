@@ -34,6 +34,9 @@ namespace LoowooTech.Jurisdiction.Common
         {
             get { return "Web.Session"; }
         }
+        /// <summary>
+        /// name  cn
+        /// </summary>
         public string Name
         {
             get { return UserName; }

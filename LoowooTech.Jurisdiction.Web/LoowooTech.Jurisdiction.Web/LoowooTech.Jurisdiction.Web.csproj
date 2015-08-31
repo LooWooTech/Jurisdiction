@@ -305,6 +305,7 @@
     <Content Include="Views\Manager\Apply.cshtml" />
     <Content Include="Views\Manager\History.cshtml" />
     <Content Include="Views\Manager\MSuccess.cshtml" />
+    <Content Include="Views\Admin\History.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

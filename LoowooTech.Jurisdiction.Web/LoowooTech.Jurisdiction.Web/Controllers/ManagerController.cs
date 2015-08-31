@@ -25,11 +25,11 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public ActionResult Manager()
         {
             //获取我管理的组
-            var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(Identity.Name));
+            var groups = Core.AuthorizeManager.GetList(Identity.Name);
             //获取当前管理组的权限审核列表
             ViewBag.Wait = Core.DataBookManager.Get(groups,CheckStatus.Wait);
 
-            ViewBag.DGroups = ADController.GetGroupDict(groups);
+            ViewBag.DGroups = ADController.GetUserDict(groups);
 
             return View();
         }
@@ -37,14 +37,11 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public ActionResult Manager(int ID, string Reason, int? Day,bool?Check,CheckStatus status=CheckStatus.Wait)
         {
             Core.DataBookManager.Check(ID, Reason, Identity.Name,Day,Check,status);
-
-            ViewBag.ManageGroup = Core.AuthorizeManager.GetList(Identity.Name);
-
             //待审批列表
-            var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(Identity.Name));
+            var groups = Core.AuthorizeManager.GetList(Identity.Name);
             ViewBag.Wait = Core.DataBookManager.Get(groups,CheckStatus.Wait);
 
-            ViewBag.DGroups = ADController.GetGroupDict(groups);
+            ViewBag.DGroups = ADController.GetUserDict(groups);
             return View();
         }
 

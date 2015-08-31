@@ -1,9 +1,9 @@
 ﻿@using LoowooTech.Jurisdiction.Common
 @{
-    ViewBag.Title = "授权";
+    ViewBag.Title = "管理";
     Layout = "~/Views/Admin/_Layout.cshtml";
     List<LoowooTech.Jurisdiction.Models.Authorize> list = ViewBag.List;
-    List<string[]> Reborn= ViewBag.Groups;
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group[]>> Reborn = ViewBag.Groups;
     int SerialNumber = 1;
 }
 <div style="position:relative;">
