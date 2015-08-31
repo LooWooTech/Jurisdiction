@@ -13,5 +13,6 @@ namespace LoowooTech.Jurisdiction.Manager
         public JURDbContext(string connectionString) : base(connectionString) { }
         public DbSet<DataBook> DataBooks { get; set; }
         public DbSet<Authorize> Authorizes { get; set; }
+        public DbSet<Record> Records { get; set; }
     }
 }

@@ -57,6 +57,7 @@
     <Compile Include="ADUserManager.cs" />
     <Compile Include="AUserManager.cs" />
     <Compile Include="AuthorizeManager.cs" />
+    <Compile Include="DataBookHelper.cs" />
     <Compile Include="DataBookManager.cs" />
     <Compile Include="GroupManager.cs" />
     <Compile Include="IgnoreManager.cs" />

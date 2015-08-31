@@ -305,15 +305,85 @@ namespace LoowooTech.Jurisdiction.Common
             return dict;
         }
 #endregion
-        
-        
-        
-        
-        
-        
-        
-        
 
-        
+        #region Operation  组和用户之间操作
+        public static bool AddUserToGroup(string Name, string GroupName,out string Error)
+        {
+            Error = string.Empty;
+            if (IsMember(GroupName, Name))
+            {
+                Error = "当前组中包括当前用户";
+                return true;
+            }
+            var UserDistinguishedName = GetDistinguishedName(Name);
+            if (string.IsNullOrEmpty(UserDistinguishedName))
+            {
+                Error += "未找到相关用户" + Name + "信息,添加用户失败";
+                return false;
+            }
+            var GroupEntry = GetGroupObject(GroupName);
+            if (GroupEntry == null)
+            {
+                Error += "未找到需要添加到的组"+GroupName+"的信息";
+                return false;
+            }
+            try
+            {
+                GroupEntry.Properties["member"].Add(UserDistinguishedName);
+                GroupEntry.CommitChanges();
+                GroupEntry.Close();
+            }
+            catch (Exception ex)
+            {
+                Error += ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool DeleteUserFromGroup(string Name, string GroupName, out string Error)
+        {
+            Error = string.Empty;
+            if (!IsMember(GroupName, Name))
+            {
+                Error = "当前组中不包含该成员";
+                return true;
+            }
+            var UserDistinguishedName = GetDistinguishedName(Name);
+            if (string.IsNullOrEmpty(UserDistinguishedName))
+            {
+                Error += "未找到相关用户" + Name + "信息,添加用户失败";
+                return false;
+            }
+            var GroupEntry = GetGroupObject(GroupName);
+            if (GroupEntry == null)
+            {
+                Error += "未找到需要添加到的组" + GroupName + "的信息";
+                return false;
+            } try
+            {
+                GroupEntry.Properties["member"].Remove(UserDistinguishedName);
+                GroupEntry.CommitChanges();
+                GroupEntry.Close();
+            }
+            catch (Exception ex)
+            {
+                Error += ex.Message;
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+
     }
 }
