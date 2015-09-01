@@ -57,6 +57,7 @@
     <Compile Include="Page.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />
+    <Compile Include="TreeObject.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

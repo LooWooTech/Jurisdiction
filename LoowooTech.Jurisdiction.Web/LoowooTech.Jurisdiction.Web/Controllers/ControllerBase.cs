@@ -82,5 +82,11 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             }
             return Content(str);
         }
+
+        protected ActionResult JsonGroup(Group group)
+        {
+            string json = "["+Group.TreeToString(group)+"]";
+            return Json(json,JsonRequestBehavior.AllowGet);
+        }
     }
 }

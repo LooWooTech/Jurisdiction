@@ -11,8 +11,11 @@ namespace LoowooTech.Jurisdiction.Controls
     {
         static void Main(string[] args)
         {
-            var manager = new ServiceManager();
-            manager.MainLoop();
+            string name=System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            Console.WriteLine(name);
+            Console.Read();
+            //var manager = new ServiceManager();
+            //manager.MainLoop();
         }
     }
 }

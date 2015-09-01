@@ -9,16 +9,32 @@
 @{
     Html.RenderPartial("AddGroup",List);
     Html.RenderPartial("AddUserGroup");
-    Html.RenderPartial("Search");
 }
 
 <hr />
-<ul>
+
+<div id="tree1"></div>
+
+<script>
+    $.getJSON(
+        "/Admin/GJson",
+        function (data) {
+            var a = [data];
+            
+            $("#tree1").tree({
+                data:a
+            })
+        }
+        )
+</script>
+
+@*<ul>
+
+    
     @{
         Html.RenderPartial("Tree", Tree);
     }
-</ul>
-<hr />
+</ul>*@
 
 
 

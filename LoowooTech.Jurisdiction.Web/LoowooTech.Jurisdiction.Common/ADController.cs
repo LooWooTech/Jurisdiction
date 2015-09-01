@@ -381,7 +381,6 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return dict;
         }
-        
 
         /// <summary>
         /// 判断用户Name是否在组GroupName中
@@ -422,7 +421,85 @@ namespace LoowooTech.Jurisdiction.Common
             return list;
         }
 
+        public static Group GetTree()
+        {
+            var group = new Group();
+            var admin = GetDirectoryObject();
+            group.Name = GetProperty(admin, "name");
+            group.Descriptions = GetProperty(admin, "description");
+            DateTime time;
+            DateTime.TryParse(GetProperty(admin, "whenCreated"), out time);
+            group.CreateTime = time;
+            foreach(DirectoryEntry child in  admin.Children)
+            {
+                var temp = GetTree(child);
+                if (temp != null)
+                {
+                    group.Children.Add(temp);
+                }
+            }
+            return group;
+        }
 
+        private static Group GetTree(DirectoryEntry Entry)
+        {
+            var group = new Group();
+            var name = GetProperty(Entry, "name");
+            if (string.IsNullOrEmpty(name) || IgnoresList.Contains(name))
+            {
+                return null;
+            }
+            group.Name = name;
+            group.Descriptions = GetProperty(Entry, "description");
+            DateTime time;
+            DateTime.TryParse(GetProperty(Entry, "whenCreated"), out time);
+            group.CreateTime = time;
+            foreach (DirectoryEntry item in Entry.Children)
+            {
+                var temp = GetTree(item);
+                if (temp != null)
+                {
+                    group.Children.Add(temp);
+                }
+            }
+            return group;
+        }
+
+        private static TreeObject GetTreeObject(DirectoryEntry Entry)
+        {
+            var tree = new TreeObject();
+            tree.label = GetProperty(Entry, "name");
+            if (string.IsNullOrEmpty(tree.label) || IgnoresList.Contains(tree.label))
+            {
+                return null;
+            }
+            foreach (DirectoryEntry item in Entry.Children)
+            {
+                var temp = GetTreeObject(item);
+                if (temp != null)
+                {
+                    tree.children.Add(temp);
+                }
+            }
+            return tree;
+        }
+
+        public static TreeObject GetTreeObject()
+        {
+            var tree = new TreeObject();
+            var admin = GetDirectoryObject();
+            tree.label = GetProperty(admin, "name");
+            foreach (DirectoryEntry child in admin.Children)
+            {
+                var temp = GetTreeObject(child);
+                if (temp != null) 
+                {
+                    tree.children.Add(temp);
+                }
+            }
+            return tree;
+            
+        }
         
 #endregion
 

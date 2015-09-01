@@ -180,6 +180,16 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
             return RedirectToAction("Impower");
         }
 
+        public ActionResult GJson()
+        {
+            var treeObject = ADController.GetTreeObject();
+            //return Content(treeObject.ToJson());
+            return Json(treeObject, JsonRequestBehavior.AllowGet);
+            //var group = ADController.GetTree();
+            //return Content(group.ToJson());
+            //return JsonGroup(group);
+        }
+
 
     }
 }
