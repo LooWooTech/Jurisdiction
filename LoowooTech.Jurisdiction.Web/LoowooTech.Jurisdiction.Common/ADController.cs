@@ -218,6 +218,15 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return false;
         }
+
+        public static string GetDomainName()
+        {
+            var admin = GetDirectoryObject();
+            var sb = new StringBuilder();
+            sb.Append(GetProperty(admin, "name"));
+            sb.Append(".com");
+            return sb.ToString();
+        }
         
 
 #endregion
@@ -236,6 +245,10 @@ namespace LoowooTech.Jurisdiction.Common
                 return new DirectoryEntry(result.Path, ADName, ADPassword, AuthenticationTypes.Secure);
             }
             return null;
+        }
+        private static void DisableUserAccount(DirectoryEntry Entry)
+        { 
+            //Entry.Properties["userAccountControl"][0]
         }
         public static bool Login(string Name, string Password)
         {
