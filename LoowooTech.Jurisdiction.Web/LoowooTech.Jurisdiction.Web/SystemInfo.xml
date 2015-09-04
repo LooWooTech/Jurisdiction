@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <Composes>
+  <Administrators>
+    <Administrator Name="Administrators"></Administrator>
+    <Administrator Name="Domain Admins"></Administrator>
+  </Administrators>
   <Compose Name="Builtin"></Compose>
   <Compose Name="Computers"></Compose>
   <Compose Name="Domain Controllers"></Compose>
@@ -11,4 +16,5 @@
   <Compose Name="System"></Compose>
   <Compose Name="Users"></Compose>
   <Compose Name="Infrastructure"></Compose>
+  <Compose Name="a"></Compose>
 </Composes>

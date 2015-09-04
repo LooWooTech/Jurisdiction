@@ -15,6 +15,7 @@ namespace LoowooTech.Jurisdiction.Common
         private static  string ADPassword { get; set; }
         private static XmlDocument configXml { get; set; }
         private static List<string> IgnoresList { get; set; }
+        private static List<string> AdminList { get; set; }
         static ADController()
         {
             ADServer = System.Configuration.ConfigurationManager.AppSettings["Server"];
@@ -34,6 +35,15 @@ namespace LoowooTech.Jurisdiction.Common
                 for (var i = 0; i < nodes.Count; i++)
                 {
                     IgnoresList.Add(nodes[i].Attributes["Name"].Value);
+                }
+            }
+            AdminList = new List<string>();
+            nodes = configXml.SelectNodes("/Composes/Administrators/Administrator");
+            if (nodes != null)
+            {
+                for (var i = 0; i < nodes.Count; i++)
+                {
+                    AdminList.Add(nodes[i].Attributes["Name"].Value);
                 }
             }
         }
@@ -140,6 +150,7 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return results;
         }
+        //通过SearchResult获取属性PropertyName的值
         private static string GetProperty(SearchResult SearchResult, string PropertyName)
         {
             if (SearchResult.Properties.Contains(PropertyName))
@@ -151,6 +162,7 @@ namespace LoowooTech.Jurisdiction.Common
                 return string.Empty;
             }
         }
+        //通过筛选器获取符合条件的名称列表
         private  static List<string> GetList(string Filter)
         {
             var list = new List<string>();
@@ -188,11 +200,12 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return dict;
         }
-        
+        //获取对象Seachresult的DistinguishedName值
         private static string GetDistinguishedName(SearchResult result)
         {
             return GetProperty(result, "distinguishedName");
         }
+        //获取对象DirectoryEntry的DistinguishedName值
         private static string GetDistinguishedName(DirectoryEntry Entry)
         {
             return GetProperty(Entry, "distinguishedName");
@@ -266,6 +279,37 @@ namespace LoowooTech.Jurisdiction.Common
                 Group = Extract(GetAllProperty(user, "memberOf"), "group")
             };
         }
+
+        private static List<User> GetUserList(DirectoryEntry Parent,string Key=null)
+        {
+            var list = new List<User>();
+            foreach (DirectoryEntry child in Parent.Children)
+            {
+                var name = GetProperty(child, "name");
+                var account = GetProperty(child, "sAMAccountName");
+                if (string.IsNullOrEmpty(Key))
+                {
+                    list.Add(new User()
+                    {
+                        Name = name,
+                        Account = account,
+                        Group = Extract(GetAllProperty(child, "memberOf"), "group")
+                    });
+                }else{
+                    if (name.Contains(Key) || account.Contains(Key))
+                    {
+                        list.Add(new User()
+                        {
+                            Name = name,
+                            Account = account,
+                            Group = Extract(GetAllProperty(child, "memberOf"), "group")
+                        });
+                    }
+                }
+                
+            }
+            return list;
+        }
         public static List<string> GetUserList()
         {
             return GetList("(&(objectCategory=person)(objectClass=user))");
@@ -294,7 +338,7 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return list;
         }
-
+        
         /// <summary>
         /// 获取组里面包含的用户
         /// </summary>
@@ -313,6 +357,7 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return dict;
         }
+        
         public static bool SetUserPassword(string Name, string OldPassword, string NewPassword, out string Error)
         {
             if (string.IsNullOrEmpty(OldPassword) || string.IsNullOrEmpty(NewPassword))
@@ -337,6 +382,25 @@ namespace LoowooTech.Jurisdiction.Common
                 return false;
             }
             return true;
+        }
+        public static Dictionary<string, List<User>> GetUserDict(string Key=null)
+        {
+            var UserCompany = GetDirectoryObject("内部人员");
+            if (UserCompany == null)
+            {
+                throw new ArgumentException("无法获取内部人员中的用户信息，请告知网站负责人！");
+            }
+            var dict = new Dictionary<string, List<User>>();
+            foreach (DirectoryEntry child in UserCompany.Children)
+            {
+                var name = GetProperty(child, "name");
+                if (string.IsNullOrEmpty(name) || dict.ContainsKey(name))
+                {
+                    continue;
+                }
+                dict.Add(name, GetUserList(child,Key));
+            }
+            return dict;
         }
 
 #endregion

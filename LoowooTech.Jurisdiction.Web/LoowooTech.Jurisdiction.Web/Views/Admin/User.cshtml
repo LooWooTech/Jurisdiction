@@ -2,7 +2,8 @@
     ViewBag.Title = "用户";
     Layout = "~/Views/Admin/_Layout.cshtml";
     List<string> Organizations = ViewBag.Organization;
-    List<LoowooTech.Jurisdiction.Models.User> Users = ViewBag.Users;
+    //List<LoowooTech.Jurisdiction.Models.User> Users = ViewBag.Users;
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.User>> Dict = ViewBag.Users;
     int SerialNumber = 1;
 }
 
@@ -20,7 +21,9 @@
         <th style="text-align:center;font-size:larger">所属组</th>
         <th>备注</th>
     </tr>
-    @foreach (var user in Users)
+
+
+    @*@foreach (var user in Users)
     {
         <tr>
             <td>@(SerialNumber++)</td>
@@ -34,10 +37,10 @@
                 }
             </td>
             <td>
-                @*<a href="" class="btn btn-danger btn-xs">锁定用户</a>*@
+                <a href="" class="btn btn-danger btn-xs">锁定用户</a>
             </td>
         </tr>
-    }   
+    }*@   
 </table>
 
 

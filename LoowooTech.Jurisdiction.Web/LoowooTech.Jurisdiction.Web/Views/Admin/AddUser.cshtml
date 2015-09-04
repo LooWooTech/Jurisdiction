@@ -10,51 +10,15 @@
             <form class="form-horizontal" method="post" action="/Admin/CreateUser">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="sn" class="control-label col-lg-3">姓：</label>
+                        <label for="Name" class="control-label col-lg-3">姓名：</label>
                         <div class="col-lg-8">
-                            <input type="text" name="Sn" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="givenName" class="control-label col-lg-3">名：</label>
-                        <div class="col-lg-8">
-                            <input type="text" name="GivenName" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="initial" class="control-label col-lg-3">缩写：</label>
-                        <div class="col-lg-8">
-                            <input type="text" name="Initial" class="form-control" />
+                            <input type="text" name="Name" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="sAMAccountName" class="control-label col-lg-3">登录名：</label>
                         <div class="col-lg-8">
                             <input type="text" name="sAMAccountName" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="control-label col-lg-3">是否永不过期:</label>
-                        <div class="col-lg-8">
-                            <label class="radio-inline">
-                                <input type="radio" name="Flag" value="True" />是
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="Flag" value="False" />否
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="" class="control-label col-lg-3">期限:</label>
-                        <div class="col-lg-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="Year" />
-                                <div class="input-group-addon">年</div>
-                                <input type="text" class="form-control" name="Month" />
-                                <div class="input-group-addon">月</div>
-                                <input type="text" class="form-control" name="Day" />
-                                <div class="input-group-addon">天</div>
-                            </div>
                         </div>
                     </div>
                     <div class="form-group">
