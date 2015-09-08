@@ -35,6 +35,7 @@ namespace LoowooTech.Jurisdiction.Models
     {
         Administrator,
         Manager,
-        Member
+        Member,
+        Guest
     }
 }

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoowooTech.Jurisdiction.Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoowooTech.Jurisdiction.WinForm", "LoowooTech.Jurisdiction.WinForm\LoowooTech.Jurisdiction.WinForm.csproj", "{BB66A128-B3B9-4811-A5F4-CED9AD59313D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoowooTech.Jurisdiction.WindowsWeb", "LoowooTech.Jurisdiction.WindowsWeb\LoowooTech.Jurisdiction.WindowsWeb.csproj", "{E4147B3E-98A9-45B6-91DD-0A949B1D43F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{BB66A128-B3B9-4811-A5F4-CED9AD59313D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB66A128-B3B9-4811-A5F4-CED9AD59313D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB66A128-B3B9-4811-A5F4-CED9AD59313D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4147B3E-98A9-45B6-91DD-0A949B1D43F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4147B3E-98A9-45B6-91DD-0A949B1D43F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4147B3E-98A9-45B6-91DD-0A949B1D43F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4147B3E-98A9-45B6-91DD-0A949B1D43F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
