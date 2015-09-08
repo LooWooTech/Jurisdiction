@@ -29,7 +29,7 @@
     </script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">杭州智拓土地规划设计咨询有限公司——权限管理系统</a>
@@ -48,13 +48,16 @@
                 @if (!string.IsNullOrEmpty(Name))
                 {
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
+                        <li><a href="#"><i class="glyphicon glyphicon-user"></i>&nbsp; @(Name)</a></li>
+                        @*<li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-cloud"></i>&nbsp;设置&nbsp;<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="/Safe/ChangeCode"><i class="glyphicon glyphicon-cog"></i>&nbsp;密码修改&nbsp;</a></li>
-                                <li><a href="/Home/Logout"><i class="glyphicon glyphicon-user"></i>&nbsp;@(Name)&nbsp;退出</a></li>
+                                <li>
+                                    <a href="/Safe/ChangeCode"><i class="glyphicon glyphicon-cog"></i>&nbsp;密码修改&nbsp;</a>
+                                </li>
+                                <li><a href="#"><i class="glyphicon glyphicon-user"></i>&nbsp;@(Name)&nbsp;</a></li>
                             </ul>
-                        </li>
+                        </li>*@
                     </ul>
                 }
             </div>
@@ -62,6 +65,7 @@
     </div>
     <div class="container">
         <br />
+
         <div class="panel panel-default" id="main-panel">
             <div class="panel-heading">
                 <h3 class="panel-title">@(ViewBag.Title)</h3>

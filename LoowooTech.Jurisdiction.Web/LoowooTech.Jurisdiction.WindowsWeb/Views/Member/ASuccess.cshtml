@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "申请权限成功提交";
+    Layout = "~/Views/Member/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.DataBook> BookList = ViewBag.Book;
+    List<string> Have = ViewBag.Have;
+}
+@if (Have.Count != 0)
+{
+    <div class="alert alert-danger" role="alert">
+        以下申请的组，您当前已经有该组的权限了：
+        @foreach (var item in Have)
+        {
+            @item
+        }
+    </div>
+}
+
+@foreach (var book in BookList)
+{
+    <div class="alert alert-success" role="alert">
+        时间：@(book.CreateTime) ,用户：@(book.Name) 申请组：@(book.GroupName) 申请权限;<br />
+        申请权限已提交，请耐心等待管理者的同意
+    </div>
+}

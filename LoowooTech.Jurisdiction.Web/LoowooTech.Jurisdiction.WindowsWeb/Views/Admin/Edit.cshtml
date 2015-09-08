@@ -1,0 +1,82 @@
+﻿@using LoowooTech.Jurisdiction.Common
+@model LoowooTech.Jurisdiction.Models.Authorize
+
+@{
+    var MyList = Model.GroupName.StrToList(',');
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group[]>> Dict = ViewBag.Groups;
+}
+<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#@(Model.ID)"><i class="glyphicon glyphicon-edit"></i>&nbsp; 编辑权限</button>
+<div class="modal fade" id="@(Model.ID)" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">编辑权限</h4>
+            </div>
+            <form class="form-horizontal" method="post" action="/Admin/ImpowerEdit">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="" class="control-label col-lg-3">管理者：</label>
+                        <div class="col-lg-8">
+                            <input type="text" name="" class="form-control" value="@(Model.Manager)" disabled="disabled" />
+                            <input type="text" name="ID" value="@(Model.ID)" style="display:none" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="control-label col-lg-3">管理组：</label>
+                        <div class="col-lg-8">
+                            <div class="panel-group" id="Edit@(Model.ID)" role="tablist" aria-multiselectable="true">
+                                @foreach (var key in Dict.Keys)
+                                {
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="Edit@(Model.ID)@(key)">
+                                            <h4 class="panel-title">
+                                                <a role="button" data-toggle="collapse" data-parent="#Edit@(Model.ID)" href="#collapse@(Model.ID)@(key)" aria-expanded="true" aria-controls="collapse@(Model.ID)@(key)">
+                                                    @(key)
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse@(Model.ID)@(key)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@(Model.ID)@(key)">
+                                            <div class="panel-body">
+                                                <table class="table">
+                                                    @foreach (var item in Dict[key])
+                                                    {
+                                                        <tr>
+                                                            @foreach (var entry in item)
+                                                            {
+                                                                <td>
+                                                                    @if (entry != null && !string.IsNullOrEmpty(entry.Name))
+                                                                    {
+                                                                        <label class="checkbox-inline">
+                                                                            <input type="checkbox" name="GroupName" value="@(entry.Name)" @(MyList.Contains(entry.Name) ? "checked" : "") /><strong>@(entry.Name)</strong>
+                                                                        </label>
+                                                                        <br />
+                                                                        <small>@(entry.Descriptions)</small>
+                                                                    }
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-lg-6 col-lg-offset-3">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i>取消</button>
+                            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

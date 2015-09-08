@@ -1,0 +1,50 @@
+﻿@using LoowooTech.Jurisdiction.Common
+@{
+    ViewBag.Title = "管理";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.Authorize> list = ViewBag.List;
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group[]>> Reborn = ViewBag.Groups;
+    int SerialNumber = 1;
+}
+<div style="position:relative;">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#Create" data-toggle="tab"><i class="glyphicon glyphicon-cog"></i>&nbsp;授权&nbsp;</a></li>
+        <li class=""><a href="#List" data-toggle="tab"><i class="glyphicon glyphicon-th"></i>&nbsp; 权限表</a></li>
+    </ul>
+</div>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="Create">
+        @{
+            Html.RenderPartial("Accredit", Reborn);
+        }
+    </div>
+    <div class="tab-pane fade" id="List">
+        <table class="table table-bordered">
+            <tr>
+                <th>序号</th>
+                <th style="width:100px;">管理者</th>
+                <th>管理组名</th>
+                <th>备注</th>
+            </tr>
+            @foreach (var item in list)
+            {
+                <tr>
+                    <td>@(SerialNumber++)</td>
+                    <td>@(item.Manager)</td>
+                    <td>
+                        @foreach (var entry in item.GroupName.StrToList(','))
+                        {
+                            <span class="label label-primary" style="line-height:250%">@(entry)</span>
+                        }
+                    </td>
+                    <td>
+                        @{
+                Html.RenderPartial("Edit", item);
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "组群";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+    List<string> List = ViewBag.List;
+}
+
+@{
+    Html.RenderPartial("AddGroup", List);
+    Html.RenderPartial("AddUserGroup");
+}
+
+<hr />
+
+<div id="tree1"></div>
+
+<script>
+    $.getJSON(
+        "/Admin/GJson",
+        function (data) {
+            var a = [data];
+
+            $("#tree1").tree({
+                data:a
+            })
+        }
+        )
+</script>

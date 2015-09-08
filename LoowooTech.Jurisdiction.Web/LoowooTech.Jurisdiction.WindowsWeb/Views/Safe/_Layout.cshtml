@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var action = Request.RequestContext.RouteData.Values["action"].ToString();
+}
+
+@section nav{
+    <li class="@(action=="Index"?"active":null)"><a href="/Home/Index"><i class="glyphicon glyphicon-home"></i>&nbsp;首页</a></li>
+    <li class="@(action=="ChangeCode"?"active":null)"><a href="/Safe/ChangeCode"><i class="glyphicon glyphicon-flag"></i>&nbsp;安全中心</a></li>
+}
+
+@RenderBody()

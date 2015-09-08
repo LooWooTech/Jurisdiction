@@ -1,0 +1,135 @@
+﻿@using LoowooTech.Jurisdiction.Models
+@using LoowooTech.Jurisdiction.Common
+@{
+    ViewBag.Title = "授权审批";
+    Layout = "~/Views/Manager/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.Wait;
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.User>> GDict = ViewBag.DGroups;
+    int Index = 1;
+    int Serial = 1;
+}
+
+<div style="position:relative;">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#Wait" data-toggle="tab"><i class="glyphicon glyphicon-fire"></i>&nbsp;待审核&nbsp;</a></li>
+        <li class=""><a href="#Manager" data-toggle="tab"><i class="glyphicon glyphicon-heart"></i>&nbsp; 我的管理&nbsp;</a></li>
+    </ul>
+</div>
+
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="Wait">
+        @foreach (var book in List)
+        {
+            <form class="form-horizontal" action="/Manager/Manager" method="post">
+                <div class="form-group">
+                    <label for="Name" class="control-label col-lg-3">申请人</label>
+                    <div class="col-lg-6">
+                        <input type="text" name="Name" value="@(book.Name)" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="GroupName" class="control-label col-lg-3">申请组</label>
+                    <div class="col-lg-6">
+                        <input type="text" name="GroupName" value="@(book.GroupName)" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Time" class="control-label col-lg-3">申请时间</label>
+                    <div class="col-lg-6">
+                        <input type="text" name="Time" value="@(book.CreateTime)" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Check" class="control-label col-lg-3">是否同意</label>
+                    <div class="col-lg-6">
+                        @foreach (CheckStatus status in Enum.GetValues(typeof(CheckStatus)))
+                        {
+                            if (status == CheckStatus.Wait || status == CheckStatus.All)
+                            {
+                                continue;
+                            }
+                            var value = (int)status;
+                            <label class="radio-inline">
+                                <input type="radio" value="@value" name="status" />@(status.GetDescription())
+                            </label>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="control-label col-lg-3">期限:</label>
+                    <div class="col-lg-3">
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="Day" value="1" />
+                            <div class="input-group-addon">天</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="true" name="Check" />永不过期
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Reason" class="control-label col-lg-3">备注（理由）</label>
+                    <div class="col-lg-6">
+                        <textarea name="Reason" class="form-control" style="width:539px;"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="ID" value="@(book.ID)" style="display:none;" />
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-6 col-lg-offset-3">
+                        <input type="submit" class="btn btn-primary" value="确定" />
+                    </div>
+                </div>
+            </form>
+            <hr />
+        }
+    </div>
+    <div class="tab-pane fade" id="Manager">
+        <div class="panel-group" role="tablist" id="accordion" aria-multiselectable="true">
+            @foreach (var key in GDict.Keys)
+            {
+                Serial = 1;
+                if (Serial % 2 == 0)
+                {
+
+                }
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="@(Index)">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(Index)" aria-expanded="true" aria-controls="#collapse@(Index)">
+                                @(key) <span class="badge">@(GDict[key].Count)</span>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse@(Index)" class="panel-collapse collapse " role="tabpanel" aria-labelledby="@(Index)">
+                        <div class="panel-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>序号</th>
+                                    <th>姓名</th>
+                                    <th>用户名</th>
+
+                                </tr>
+                                @foreach (var item in GDict[key])
+                                {
+                                    <tr>
+                                        <td>@(Serial++)</td>
+                                        <td>@(item.Name)</td>
+                                        <td>@(item.Account)</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                                Index++;
+            }
+        </div>
+    </div>
+</div>

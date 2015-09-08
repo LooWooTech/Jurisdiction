@@ -21,7 +21,7 @@ namespace LoowooTech.Jurisdiction.Manager
         public List<string> GetList(string Name)
         {
             var authorize = GetList().FirstOrDefault(e => e.Manager == Name);
-            if (authorize == null)
+            if (authorize == null||string.IsNullOrEmpty(authorize.GroupName))
             {
                 return new List<string>();
             }
@@ -31,7 +31,7 @@ namespace LoowooTech.Jurisdiction.Manager
             {
                 list.Add(item);
             }
-            return list;
+            return list.OrderBy(e=>e).ToList();
         }
         public List<string> GetAllManager()
         {

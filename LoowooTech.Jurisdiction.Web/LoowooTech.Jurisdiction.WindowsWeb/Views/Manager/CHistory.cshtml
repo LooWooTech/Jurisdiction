@@ -1,0 +1,106 @@
+﻿@using LoowooTech.Jurisdiction.Models;
+@{
+    ViewBag.Title = "审批历史";
+    Layout = "~/Views/Manager/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.List;
+    List<string> NList = ViewBag.NList;
+    List<string> GList = ViewBag.GLIst;
+    int Serial = 1;
+}
+
+<div style="overflow:hidden;margin-bottom:10px;float:right">
+    <form class="form-inline" style="float:right;">
+        <div class="form-group">
+            <label for="">申请人：</label>
+            <select name="Name" class="form-control">
+                <option value="">全部</option>
+                @foreach (var item in NList)
+                {
+                    <option value="@(item)" @(Request.QueryString["Name"] == item ? "selected=selected" : "")>@(item)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="">组名：</label>
+            <select name="GroupName" class="form-control">
+                <option value="">全部</option>
+                @foreach (var item in GList)
+                {
+                    <option value="@(item)" @(Request.QueryString["GroupName"] == item ? "selected=selected" : "")>@(item)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="">申请状态：</label>
+            <select name="status" class="form-control">
+                <option value="3">全部</option>
+                <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
+                <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="">是否过期：</label>
+            <select name="Label" class="form-control">
+                <option value="null">全部</option>
+                <option value="false" @(Request.QueryString["Label"] == "false" ? "selected=selected" : "")>有效</option>
+                <option value="true" @(Request.QueryString["Label"] == "true" ? "selected=selected" : "")>过期</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">过滤</button>
+    </form>
+</div>
+
+<table class="table table-bordered">
+    <tr>
+        <th>序号</th>
+        <th>申请人</th>
+        <th>申请组</th>
+        <th>申请时间</th>
+        <th>申请状态</th>
+        <th>审核时间</th>
+        <th>期限</th>
+        <th>是否过期</th>
+        <th>备注（理由）</th>
+    </tr>
+    @foreach (var item in List)
+    {
+        <tr>
+            <td>@(Serial++)</td>
+            <td>@(item.Name)</td>
+            <td>@(item.GroupName)</td>
+            <td>@(item.CreateTime)</td>
+            @switch (item.Status)
+            {
+                case CheckStatus.Agree:
+                    <td class="text-success"><i class="glyphicon glyphicon-ok-sign"></i>&nbsp;同意</td>
+                    <td>@(item.CheckTime)</td>
+                    <td>@(item.DateDiff)</td>
+                    <td>
+                        @if (item.Label)
+                        {
+                            <i class="glyphicon glyphicon-ban-circle"></i>
+                        }
+                    </td>
+                        break;
+                case CheckStatus.Disagree:
+                <td class="text-danger"><i class="glyphicon glyphicon-remove-sign"></i>&nbsp; 不同意</td>
+                <td>@(item.CheckTime)</td>
+                <td>-</td>
+                <td>-</td>
+                        break;
+                case CheckStatus.Wait:
+                <td class="text-warning"><i class="glyphicon glyphicon-question-sign"></i>&nbsp; 等待审核</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                        break;
+            }
+            <td>@(item.Reason)</td>
+        </tr>
+    }
+    <tr>
+        <td colspan="9">
+            @Html.Partial("_pagination", ViewBag.Page as object)
+        </td>
+    </tr>
+</table>

@@ -28,7 +28,7 @@ namespace LoowooTech.Jurisdiction.Web.Controllers
         public  ActionResult  User(string Key=null)
         {
             //ViewBag.Users = Core.ADManager.GetListUser(Key);
-            ViewBag.Users = ADController.GetUserDict(Key);
+            //ViewBag.Users = ADController.GetUserDict(Key);
             ViewBag.Organization = Core.ADManager.GetOrganizations("内部人员");
             return View();
         }

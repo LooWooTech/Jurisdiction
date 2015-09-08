@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "用户列表";
+    Layout = "~/Views/Admin/_Layout.cshtml";
+    Dictionary<string, List<LoowooTech.Jurisdiction.Models.User>> Dict = ViewBag.Users;
+    List<string> Organizations = ViewBag.Organization;
+}
+@{
+    Html.RenderPartial("AddUser", Organizations);
+    
+    //Html.RenderPartial("UserSearch");
+}
+
+<form class="form-inline" style="float:right;"action="">
+    <div class="form-group">
+        <label >账户状态：</label>
+        <select name="IsActive" class="form-control">
+            <option value="null">全部</option>
+            <option value="false" @(Request.QueryString["IsActive"]=="false"?"selected=selected":"")>禁用</option>
+            <option value="true" @(Request.QueryString["IsActive"]=="true"?"selected=selected":"")>启用</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="搜索用户" name="Key" />
+    </div>
+    <button type="submit" class="btn btn-info">筛选</button>
+</form>
+
+
+
+<table class="table table-bordered">
+    <tr>
+        <th style="width:100px;">姓名</th>
+        <th style="width:100px;">账号</th>
+        <th>所属组</th>
+        <th style="width:100px;">备注</th>
+    </tr>
+</table>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    @foreach (var key in Dict.Keys)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="@(key)">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(key)" aria-expanded="true" aria-controls="collapse@(key)">
+                        @(key) <span class="badge">@(Dict[key].Count)</span>
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse@(key)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@(key)">
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        @foreach (var item in Dict[key])
+                        {
+                            <tr>
+                                <td style="width:100px;">@(item.Name)</td>
+                                <td style="width:100px;">@(item.Account)</td>
+                                <td>
+                                    @foreach (var entry in item.Group)
+                                    {
+                                        <span class="label label-primary " style="line-height:250%">@(entry)</span>
+                                    }
+                                </td>
+                                <td style="width:100px;">
+                                    @if (!item.IsActive)
+                                    {
+                                        <a href="/Admin/ActiveUser?sAMAccountName=@(item.Account)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; 启用账户</a>
+                                    }else
+                                    {
+                                        <a href="/Admin/DisableUser?sAMAccountName=@(item.Account)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 禁用账户</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+

@@ -81,7 +81,6 @@ namespace LoowooTech.Jurisdiction.Common
         {
             return Get("(&(name=" + Name + "))"); 
         }
-        
         private static SearchResult SearchOne(string Filter, DirectoryEntry Entry=null)
         {
             if (Entry == null)
@@ -231,7 +230,15 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return false;
         }
-
+        private static DirectoryEntries GetChildren(string OU)
+        {
+            var DirectoryEntry = GetOrganizationObject(OU);
+            if (DirectoryEntry == null)
+            {
+                throw new ArgumentException("无法获取DirectoryEntry对象");
+            }
+            return DirectoryEntry.Children;
+        }
         public static string GetDomainName()
         {
             var admin = GetDirectoryObject();
@@ -249,19 +256,15 @@ namespace LoowooTech.Jurisdiction.Common
         {
             return Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))");
         }
-        private static DirectoryEntry GetUserObject(string Name, string Password)
+        private static DirectoryEntry GetUserObject(string sAMAccountName, string Password)
         {
-            var entry = GetDirectoryObject(Name, Password);
-            var result = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", entry);
+            var entry = GetDirectoryObject(sAMAccountName, Password);
+            var result = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))", entry);
             if (result != null)
             {
                 return new DirectoryEntry(result.Path, ADName, ADPassword, AuthenticationTypes.Secure);
             }
             return null;
-        }
-        private static void DisableUserAccount(DirectoryEntry Entry)
-        { 
-            //Entry.Properties["userAccountControl"][0]
         }
         public static bool Login(string Name, string Password)
         {
@@ -269,15 +272,70 @@ namespace LoowooTech.Jurisdiction.Common
             var result = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", user);
             return result == null ? false : true;
         }
-        public static User GetUser(string Name)
+        public static User GetUser(string sAMAccountName)
         {
-            var user = GetUserObject(Name);
+            var user = GetUserObject(sAMAccountName);
+            if (user == null)
+            {
+                return new User()
+                {
+                    Name = sAMAccountName,
+                    Type = GroupType.Guest
+                };
+            }
             return new User()
             {
                 Name = GetProperty(user, "name"),
                 Account=GetProperty(user,"sAMAccountName"),
-                Group = Extract(GetAllProperty(user, "memberOf"), "group")
+                Group = Extract(GetAllProperty(user, "memberOf"), "group").OrderBy(e=>e).ToList()
             };
+        }
+
+        private static bool IsActive(DirectoryEntry Entry)
+        {
+            int iUserAccountControl = Convert.ToInt32(GetProperty(Entry, "userAccountControl"));
+            int iUserAccountControl_Disabled = Convert.ToInt32(ADAccountOptions.UF_ACCOUNTDISABLE);
+            int iFlagExists = iUserAccountControl & iUserAccountControl_Disabled;
+            return iFlagExists > 0 ? false : true;
+        }
+        public static bool IsAdministrator(User user)
+        {
+            if (user.Group == null || user.Group.Count == 0)
+            {
+                return false;
+            }
+            foreach (var item in AdminList)
+            {
+                if (user.Group.Contains(item))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static void DisableAccount(string sAMAccountName)
+        {
+            if(string.IsNullOrEmpty(sAMAccountName))
+            {
+                return;
+            }
+            var user = GetUserObject(sAMAccountName);
+            user.Properties["userAccountControl"][0] = ADAccountOptions.UF_NORMAL_ACCOUNT | ADAccountOptions.UF_DONT_EXPIRE_PASSWD | ADAccountOptions.UF_ACCOUNTDISABLE;
+            user.CommitChanges();
+            user.Close();
+        }
+
+        public static void ActiveAccount(string sAMAccountName)
+        {
+            if (string.IsNullOrEmpty(sAMAccountName))
+            {
+                return;
+            }
+            var user = GetUserObject(sAMAccountName);
+            user.Properties["userAccountControl"][0] = ADAccountOptions.UF_NORMAL_ACCOUNT;
+            user.CommitChanges();
+            user.Close();
         }
 
         private static List<User> GetUserList(DirectoryEntry Parent,string Key=null)
@@ -287,13 +345,15 @@ namespace LoowooTech.Jurisdiction.Common
             {
                 var name = GetProperty(child, "name");
                 var account = GetProperty(child, "sAMAccountName");
+                var flag = IsActive(child);
                 if (string.IsNullOrEmpty(Key))
                 {
                     list.Add(new User()
                     {
                         Name = name,
                         Account = account,
-                        Group = Extract(GetAllProperty(child, "memberOf"), "group")
+                        Group = Extract(GetAllProperty(child, "memberOf"), "group").OrderBy(e=>e).ToList(),
+                        IsActive=flag
                     });
                 }else{
                     if (name.Contains(Key) || account.Contains(Key))
@@ -302,7 +362,8 @@ namespace LoowooTech.Jurisdiction.Common
                         {
                             Name = name,
                             Account = account,
-                            Group = Extract(GetAllProperty(child, "memberOf"), "group")
+                            Group = Extract(GetAllProperty(child, "memberOf"), "group").OrderBy(e=>e).ToList(),
+                            IsActive=flag
                         });
                     }
                 }
@@ -337,8 +398,7 @@ namespace LoowooTech.Jurisdiction.Common
                 list.Add(GetUser(GetsAMAccountByName(item)));
             }
             return list;
-        }
-        
+        }  
         /// <summary>
         /// 获取组里面包含的用户
         /// </summary>
@@ -357,14 +417,13 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return dict;
         }
-        
-        public static bool SetUserPassword(string Name, string OldPassword, string NewPassword, out string Error)
+        public static bool SetUserPassword(string sAMAccountName, string OldPassword, string NewPassword, out string Error)
         {
-            if (string.IsNullOrEmpty(OldPassword) || string.IsNullOrEmpty(NewPassword))
+            if (string.IsNullOrEmpty(NewPassword))
             {
                 throw new ArgumentException("输入的密码不能为空");
             }
-            DirectoryEntry userEntry = GetUserObject(GetsAMAccountByName(Name), OldPassword);
+            DirectoryEntry userEntry = GetUserObject(sAMAccountName, OldPassword);
             if (userEntry == null)
             {
                 throw new ArgumentException("输入的原始密码不正确，请核对");
@@ -383,24 +442,41 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return true;
         }
-        public static Dictionary<string, List<User>> GetUserDict(string Key=null)
+        public static Dictionary<string, List<User>> GetUserDict(bool? IsActive=null,string Key=null)
         {
-            var UserCompany = GetDirectoryObject("内部人员");
-            if (UserCompany == null)
-            {
-                throw new ArgumentException("无法获取内部人员中的用户信息，请告知网站负责人！");
-            }
             var dict = new Dictionary<string, List<User>>();
-            foreach (DirectoryEntry child in UserCompany.Children)
+            foreach (DirectoryEntry child in GetChildren(System.Configuration.ConfigurationManager.AppSettings["PEOPLE"]))
             {
                 var name = GetProperty(child, "name");
                 if (string.IsNullOrEmpty(name) || dict.ContainsKey(name))
                 {
                     continue;
                 }
-                dict.Add(name, GetUserList(child,Key));
+                var query = GetUserList(child, Key).AsQueryable();
+                if (IsActive.HasValue)
+                {
+                    query = query.Where(e => e.IsActive == IsActive.Value);
+                }
+                dict.Add(name, query.ToList());
             }
             return dict;
+        }
+
+        public static void CreateUser(string Name, string sAMAccountName, string Organization,string FirstPassword)
+        {
+            var organizationEntry = GetOrganizationObject(Organization);
+            if (organizationEntry == null)
+            {
+                throw new ArgumentException("未找到创建用户的组织单元");
+            }
+            var user = organizationEntry.Children.Add("CN=" + Name, "user");
+            organizationEntry.Close();
+            user.Properties["sAMAccountName"].Value = sAMAccountName;
+            user.CommitChanges();
+            user.Invoke("SetPassword", new object[] { FirstPassword });
+            user.CommitChanges();
+            user.Close();
+            ActiveAccount(sAMAccountName);
         }
 
 #endregion
@@ -465,14 +541,14 @@ namespace LoowooTech.Jurisdiction.Common
         /// <param name="GroupName"></param>
         /// <param name="Name"></param>
         /// <returns></returns>
-        public static bool IsMember(string GroupName, string Name)
+        public static bool IsMember(string GroupName, string sAMAccountName)
         {
             var GEntry = GetDirectoryObject(GroupName);
             if (GEntry == null)
             {
                 throw new ArgumentException("未找到相关的组信息");
             }
-            string UserDistinguishedName = GetDistinguishedName(Name);
+            string UserDistinguishedName = GetDistinguishedName(sAMAccountName);
             return GetAllProperty(GEntry, "member").Contains(UserDistinguishedName) ? true : false;
         }
         public static Group GetGroup(string GroupName)
@@ -484,9 +560,9 @@ namespace LoowooTech.Jurisdiction.Common
                 Descriptions = GetProperty(Group, "description")
             };
         }
-        public static List<Group> GetGroupList(string Name)
+        public static List<Group> GetGroupList(string sAMAccountName)
         {
-            var GroupsNames = GetGroupListBysAMAccountName(GetsAMAccountByName(Name));
+            var GroupsNames = GetGroupListBysAMAccountName(sAMAccountName);
             var list = new List<Group>();
             if (GroupsNames != null)
             {
@@ -495,7 +571,7 @@ namespace LoowooTech.Jurisdiction.Common
                     list.Add(GetGroup(item));
                 }
             }
-            return list;
+            return list.OrderBy(e=>e.Name).ToList();
         }
 
         public static Group GetTree()
@@ -580,19 +656,43 @@ namespace LoowooTech.Jurisdiction.Common
         
 #endregion
 
+        #region 组织单元
+
+        private static DirectoryEntry GetOrganizationObject(string OU)
+        {
+            return Get("(&(OU=" + OU + "))");
+        }
+        public static List<string> GetOrganizations(string OU)
+        {
+            var list = new List<string>();
+            foreach (DirectoryEntry item in GetChildren(OU))
+            {
+                var name = GetProperty(item, "name");
+                if (!string.IsNullOrEmpty(name))
+                {
+                    list.Add(name);
+                }
+            }
+            return list;
+        }
+
+        #endregion
+
+
+
         #region Operation  组和用户之间操作
-        public static bool AddUserToGroup(string Name, string GroupName,out string Error)
+        public static bool AddUserToGroup(string sAMAccountName, string GroupName,out string Error)
         {
             Error = string.Empty;
-            if (IsMember(GroupName, Name))
+            if (IsMember(GroupName, sAMAccountName))
             {
                 Error = "当前组中包括当前用户";
                 return true;
             }
-            var UserDistinguishedName = GetDistinguishedName(Name);
+            var UserDistinguishedName = GetDistinguishedName(sAMAccountName);
             if (string.IsNullOrEmpty(UserDistinguishedName))
             {
-                Error += "未找到相关用户" + Name + "信息,添加用户失败";
+                Error += "未找到相关用户" + sAMAccountName + "信息,添加用户失败";
                 return false;
             }
             var GroupEntry = GetGroupObject(GroupName);
@@ -660,4 +760,23 @@ namespace LoowooTech.Jurisdiction.Common
 
 
     }
+
+    public enum ADAccountOptions
+    {
+        UF_TEMP_DUPLICATE_ACCOUNT = 0x0100,
+        UF_NORMAL_ACCOUNT = 0x0200,
+        UF_INTERDOMAIN_TRUST_ACCOUNT = 0x0800,
+        UF_WORKSTATION_TRUST_ACCOUNT = 0x1000,
+        UF_SERVER_TRUST_ACCOUNT = 0x2000,
+        UF_DONT_EXPIRE_PASSWD = 0x10000,
+        UF_SCRIPT = 0x0001,
+        UF_ACCOUNTDISABLE = 0x0002,
+        UF_HOMEDIR_REQUIRED = 0x0008,
+        UF_LOCKOUT = 0x0010,
+        UF_PASSWD_NOTREQD = 0x0020,
+        UF_PASSWD_CANT_CHANGE = 0x0040,
+        UF_ACCOUNT_LOCKOUT = 0X0010,
+        UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED = 0X0080,
+        UF_EXPIRE_USER_PASSWORD = 0x800000,
+    } 
 }

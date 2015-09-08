@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "申请权限";
+    Layout = "~/Views/Manager/_Layout.cshtml";
+    LoowooTech.Jurisdiction.Models.User User = ViewBag.User;
+    List<string> ManagerList = ViewBag.ManagerList;
+    int SerialNumber = 1;
+}
+
+
+<div style="position:relative">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#Apply" data-toggle="tab"><i class="glyphicon glyphicon-glass"></i>&nbsp;申请中心</a></li>
+        <li class=""><a href="#Message" data-toggle="tab"><i class="glyphicon glyphicon-user"></i>&nbsp;基础信息</a></li>
+
+    </ul>
+</div>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="Apply">
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label for="" class="control-label col-lg-3">管理者：</label>
+                <div class="col-lg-6">
+                    <select class="form-control" name="Boss">
+                        @foreach (var item in ManagerList)
+                        {
+                            <option value="@(item)">@(item)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="control-label col-lg-3">申请组：</label>
+                <div class="col-lg-8">
+                    <table class="table" id="Group"></table>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-8 col-lg-offset-3">
+                    <input type="submit" class="btn btn-primary" value="申请" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="tab-pane fade " id="Message">
+        您好！@(User.Name):
+        @if (User.MGroup != null)
+        {
+
+            <p style="line-height:250%">
+                您当前隶属于:
+                <table class="table table-bordered">
+                    <tr>
+                        <th>序号</th>
+                        <th>组名称</th>
+                        <th>描述</th>
+                    </tr>
+                    @foreach (var item in User.MGroup)
+                    {
+                        <tr>
+                            <td>@(SerialNumber++)</td>
+                            <td>
+                                <span class="badge">@(item.Name)</span>
+                            </td>
+                            <td>@(item.Descriptions)</td>
+                        </tr>
+                    }
+                </table>
+            </p>
+        }
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        $("[name=Boss]").click(function () {
+            var value = $(this).val();
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    $("#Group").empty().append(xmlhttp.responseText);
+                }
+            }
+            xmlhttp.open("GET", "/Member/GetGroupList?Boss=" + value, true);
+            xmlhttp.send();
+        })
+    })
+</script>

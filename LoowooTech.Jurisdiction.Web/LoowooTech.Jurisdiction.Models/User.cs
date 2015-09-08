@@ -27,6 +27,10 @@ namespace LoowooTech.Jurisdiction.Models
         /// 管理哪些组
         /// </summary>
         public List<string> Managers { get; set; }
+        /// <summary>
+        /// 是否禁用账号
+        /// </summary>
+        public bool IsActive { get; set; }
 
     }
 

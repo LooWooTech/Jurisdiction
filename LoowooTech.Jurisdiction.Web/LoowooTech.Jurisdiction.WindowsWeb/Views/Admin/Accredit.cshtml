@@ -1,0 +1,71 @@
+﻿@model Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group[]>>
+
+
+<form class="form-horizontal" method="post" action="">
+    <div class="form-group">
+        <label for="" class="control-label col-lg-3">管理者：</label>
+        <div class="col-lg-6">
+            <input type="text" name="Manager" class="form-control" id="Manager" autocomplete="off" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="" class="control-label col-lg-3">管理组：</label>
+        <div class="col-lg-6">
+            <div class="panel-group" id="accredit" role="tablist" aria-multiselectable="true">
+                @foreach (var key in Model.Keys)
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="@(key)">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accredit" href="#collapse@(key)" aria-expanded="true" aria-controls="collapse@(key)">
+                                    @(key)
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse@(key)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@(key)">
+                            <div class="panel-body">
+                                <table class="table">
+                                    @foreach (var item in Model[key])
+                                    {
+                                        <tr>
+                                            @foreach (var entry in item)
+                                            {
+                                                <td>
+                                                    @if (entry != null && !string.IsNullOrEmpty(entry.Name))
+                                                    {
+                                                        <label class="checkbox-inline">
+                                                            <input type="checkbox" value="@(entry.Name)" name="GroupName" /><strong>@(entry.Name)</strong>
+                                                        </label>
+                                                        <br />
+                                                        <small>@(entry.Descriptions)</small>
+                                                    }
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-lg-offset-3">
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+    </div>
+</form>
+
+
+
+<script>
+    $(function () {
+        $("#Manager").AutoComplete({
+            'data': "/Admin/Gain",
+            'width': 'auto',
+            'itemHeight': 50,
+            'ajaxDataType': 'json',
+            'onerror': function (msg) { alert(msg);}
+        })
+    })
+</script>

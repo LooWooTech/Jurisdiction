@@ -1,0 +1,81 @@
+﻿@using LoowooTech.Jurisdiction.Models
+@{
+    ViewBag.Title = "申请历史";
+    Layout = "~/Views/Member/_Layout.cshtml";
+    List<LoowooTech.Jurisdiction.Models.DataBook> List = ViewBag.List;
+    int SerialNumber = 1;
+}
+
+
+
+<div style="overflow:hidden;margin-bottom:10px;float:right;">
+    <form class="form-inline" style="float:right;">
+        <div class="input-group">
+            <div class="input-group-btn">
+                <select name="status" class="form-control">
+                    <option value="3">全部</option>
+                    <option value="0" @(Request.QueryString["status"] == "0" ? "selected=selected" : "")>等待审核</option>
+                    <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
+                    <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
+                </select>
+            </div>
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-primary">过滤</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+<table class="table table-bordered">
+    <tr>
+        <th>序号</th>
+        <th>申请组</th>
+        <th>申请时间</th>
+
+
+        <th>申请状态</th>
+        <th>审核时间</th>
+        <th>审核人</th>
+        <th>权限期限</th>
+        <th>备注、理由</th>
+    </tr>
+    @foreach (var item in List)
+    {
+        <tr>
+            <td>@(SerialNumber++)</td>
+            <td>@(item.GroupName)</td>
+            <td>@(item.CreateTime)</td>
+            @switch (item.Status)
+            {
+                case CheckStatus.Wait:
+                    <td class="text-warning"><span class="glyphicon glyphicon-question-sign">等待审核</span></td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    break;
+                case CheckStatus.Agree:
+
+                <td class="text-success"><span class="glyphicon glyphicon-ok-sign">审核通过</span></td>
+                <td>@(item.CheckTime)</td>
+                <td>@(item.Checker)</td>
+                <td>@(item.DateDiff)</td>
+                    break;
+                case CheckStatus.Disagree:
+                <td class="text-danger"><span class="glyphicon glyphicon-remove-sign">审核不通过</span></td>
+                <td>@(item.CheckTime)</td>
+                <td>@(item.Checker)</td>
+                <td>-</td>
+                    break;
+            }
+            <td>@(item.Reason)</td>
+
+        </tr>
+    }
+    <tr>
+        <td colspan="9">
+            @Html.Partial("_pagination", ViewBag.Page as object)
+        </td>
+    </tr>
+</table>
+
+
