@@ -29,7 +29,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         {
             ViewBag.DICT = Core.ADManager.Gain();
             var list = Core.ADManager.GetAllOrganization();
-            list.Remove("内部人员");
+            list.Remove(System.Configuration.ConfigurationManager.AppSettings["PEOPLE"]);
             ViewBag.List = list;
             ViewBag.Tree = Core.ADManager.GetTree();
             return View();
