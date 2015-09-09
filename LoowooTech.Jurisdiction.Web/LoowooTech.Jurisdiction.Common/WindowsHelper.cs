@@ -11,9 +11,9 @@ namespace LoowooTech.Jurisdiction.Common
         public static string GetUserName(HttpRequestBase request,HttpContextBase context)
         {
             //return "poweradmin";
-            return "Administrator";
+            //return "Administrator";
             //return "wjl";
-            //return request.IsAuthenticated ? context.User.Identity.Name.GetDomainName() : string.Empty;
+            return request.IsAuthenticated ? context.User.Identity.Name.GetDomainName() : string.Empty;
         }
 
         public static string GetDomainName(this string FullName)
