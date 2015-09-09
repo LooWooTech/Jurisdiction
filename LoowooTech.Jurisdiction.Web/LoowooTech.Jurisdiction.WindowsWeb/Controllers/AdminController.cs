@@ -103,6 +103,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         {
             var groups = ADController.GetGroupList();
             ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
+            //
             //ViewBag.DGroups = ADController.GetUserDict(groups);
             return View();
         }
@@ -111,6 +112,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         public ActionResult Manager(int ID, string Reason, int? Day, bool? Check, CheckStatus status = CheckStatus.Wait)
         {
             Core.DataBookManager.Check(ID, Reason, sAMAccountName, Day, Check, status);
+            Core.MessageManager.Add(Core.DataBookManager.Get(ID), ADController.GetNameBysAMAccountName(sAMAccountName));
             var groups = ADController.GetGroupList();
             ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
             ViewBag.DGroups = ADController.GetUserDict(groups);

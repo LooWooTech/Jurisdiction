@@ -57,5 +57,11 @@ namespace LoowooTech.Jurisdiction.Manager
         {
             get { return _authorizeManager == null ? _authorizeManager = new AuthorizeManager() : _authorizeManager; }
         }
+
+        private MessageManager _messageManager;
+        public MessageManager MessageManager
+        {
+            get { return _messageManager == null ? _messageManager = new MessageManager() : _messageManager; }
+        }
     }
 }

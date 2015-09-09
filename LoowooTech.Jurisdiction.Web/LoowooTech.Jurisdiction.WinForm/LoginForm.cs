@@ -25,6 +25,10 @@ namespace LoowooTech.Jurisdiction.WinForm
             this.WindowsName.Text = GetOSName();
             this.DomainName.Text = GetDomainName();
         }
+        /// <summary>
+        /// 获取客户端操作系统
+        /// </summary>
+        /// <returns></returns>
         private string GetOSName()
         {
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT Caption FROM Win32_operatingSystem");
@@ -34,6 +38,10 @@ namespace LoowooTech.Jurisdiction.WinForm
             }
             return null;
         }
+        /// <summary>
+        /// 获取域名
+        /// </summary>
+        /// <returns></returns>
         private string GetDomainName()
         {
             SelectQuery query = new SelectQuery("Win32_ComputerSystem");

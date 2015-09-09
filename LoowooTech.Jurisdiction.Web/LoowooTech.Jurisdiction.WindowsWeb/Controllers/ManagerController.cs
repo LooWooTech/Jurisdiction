@@ -35,6 +35,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         public ActionResult Manager(int ID, string Reason, int? Day, bool? Check, CheckStatus status = CheckStatus.Wait)
         {
             Core.DataBookManager.Check(ID, Reason, sAMAccountName, Day, Check, status);
+            Core.MessageManager.Add(Core.DataBookManager.Get(ID), ADController.GetNameBysAMAccountName(sAMAccountName));
             //待审批列表
             var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(sAMAccountName));
             ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
@@ -82,6 +83,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             try
             {
                 Indexs = Core.DataBookManager.Add(None, sAMAccountName);
+                Core.MessageManager.Add(None, ADController.GetNameBysAMAccountName(sAMAccountName), Boss);
             }
             catch (Exception ex)
             {

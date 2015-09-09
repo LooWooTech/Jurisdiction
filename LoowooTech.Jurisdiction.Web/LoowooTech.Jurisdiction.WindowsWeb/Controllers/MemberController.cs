@@ -47,6 +47,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             try
             {
                 Indexs = Core.DataBookManager.Add(None,sAMAccountName);
+                Core.MessageManager.Add(None, ADController.GetNameBysAMAccountName(sAMAccountName), Boss);
             }
             catch (Exception ex)
             {
