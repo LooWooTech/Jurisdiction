@@ -35,6 +35,12 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult CreateGroup(Group group, string Position, Category category)
+        {
+            Core.ADManager.Create(group, Position, category);
+            return RedirectToAction("Group");
+        }
 
         [HttpPost]
         public ActionResult CreateUser(string Name,string sAMAccountName,string Organization,string FirstPassword)
