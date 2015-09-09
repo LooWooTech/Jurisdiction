@@ -180,7 +180,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
                 throw new ArgumentException(ex.Message);
             }
             ViewBag.List = Core.AuthorizeManager.GetList();
-            ViewBag.Groups = ADController.GetGroupList().ListToTable();
+            ViewBag.Groups = ADController.GetGroupDict().DictToTable();
             return View();
         }
         [HttpPost]
