@@ -97,7 +97,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         {
             var groups = ADController.GetGroupList();
             ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
-            ViewBag.DGroups = ADController.GetUserDict(groups);
+            //ViewBag.DGroups = ADController.GetUserDict(groups);
             return View();
         }
 
