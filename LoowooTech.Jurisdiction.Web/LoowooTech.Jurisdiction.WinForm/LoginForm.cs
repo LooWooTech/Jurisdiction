@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoowooTech.Jurisdiction.Manager;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,12 +7,15 @@ using System.Drawing;
 using System.Linq;
 using System.Management;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LoowooTech.Jurisdiction.WinForm
 {
     public partial class LoginForm : Form
     {
+        private Thread Thread { get; set; }
+        private string sAMAccountName { get; set; }
         public LoginForm()
         {
             InitializeComponent();
@@ -20,10 +24,13 @@ namespace LoowooTech.Jurisdiction.WinForm
 
         private void Init()
         {
+            this.sAMAccountName = "wjl";
             this.ComputerName.Text = Environment.UserDomainName;
             this.LoginName.Text = Environment.UserName;
             this.WindowsName.Text = GetOSName();
             this.DomainName.Text = GetDomainName();
+            this.Thread = new Thread(Detect);
+            this.Thread.Start();
         }
         /// <summary>
         /// 获取客户端操作系统
@@ -67,7 +74,29 @@ namespace LoowooTech.Jurisdiction.WinForm
             }
             else
             {
+                this.Thread.Join();
                 e.Cancel = true;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            LoowooTech.Jurisdiction.Models.Message entry = MessageHelper.Get(sAMAccountName);
+            var box = new Infomation(string.Format("{0}{1}",entry.Sender,entry.Info),entry.ID);
+            box.Show();
+        }
+
+        private void Detect()
+        {
+            while (true)
+            {
+                foreach (var item in MessageHelper.GetList(sAMAccountName))
+                {
+                    var box = new Infomation(string.Format("{0}{1}", item.Sender, item.Info), item.ID);
+                    box.ShowDialog();
+                    Thread.Sleep(50000);
+                }
+                Thread.Sleep(50000);
             }
         }
     }
