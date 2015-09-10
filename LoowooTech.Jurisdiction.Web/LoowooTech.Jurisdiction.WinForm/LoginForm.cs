@@ -16,6 +16,7 @@ namespace LoowooTech.Jurisdiction.WinForm
     {
         private Thread Thread { get; set; }
         private string sAMAccountName { get; set; }
+        private List<Thread> ThreadList { get; set; }
         public LoginForm()
         {
             InitializeComponent();
@@ -29,6 +30,9 @@ namespace LoowooTech.Jurisdiction.WinForm
             this.LoginName.Text = Environment.UserName;
             this.WindowsName.Text = GetOSName();
             this.DomainName.Text = GetDomainName();
+
+            ThreadList = new List<Thread>();
+            //Detect();
             this.Thread = new Thread(Detect);
             this.Thread.Start();
         }
@@ -74,6 +78,10 @@ namespace LoowooTech.Jurisdiction.WinForm
             }
             else
             {
+                //foreach (var item in ThreadList)
+                //{
+                //    item.Abort();
+                //}
                 this.Thread.Join();
                 e.Cancel = true;
             }
@@ -85,6 +93,27 @@ namespace LoowooTech.Jurisdiction.WinForm
             var box = new Infomation(string.Format("{0}{1}",entry.Sender,entry.Info),entry.ID);
             box.Show();
         }
+        private void ShowMessage(object o)
+        {
+            LoowooTech.Jurisdiction.Models.Message message = (LoowooTech.Jurisdiction.Models.Message)o;
+            var box = new Infomation(string.Format("{0}{1}", message.Sender, message.Info), message.ID);
+            box.ShowDialog();
+        }
+
+        private void ShowMessage2(LoowooTech.Jurisdiction.Models.Message message)
+        {
+            
+            var box = new Infomation(string.Format("{0}{1}", message.Sender, message.Info), message.ID);
+            box.Show();
+        }
+
+        delegate void ShowMessageDelegate(LoowooTech.Jurisdiction.Models.Message message);
+
+        private void ShowMessage(LoowooTech.Jurisdiction.Models.Message message)
+        {
+            
+            this.Invoke(new ShowMessageDelegate(ShowMessage2), new[]{ message});
+        }
 
         private void Detect()
         {
@@ -92,9 +121,11 @@ namespace LoowooTech.Jurisdiction.WinForm
             {
                 foreach (var item in MessageHelper.GetList(sAMAccountName))
                 {
-                    var box = new Infomation(string.Format("{0}{1}", item.Sender, item.Info), item.ID);
-                    box.ShowDialog();
-                    Thread.Sleep(50000);
+                    ShowMessage(item);
+                    //var thread = new Thread(ShowMessage);
+                    //thread.Start(item);
+                    //ThreadList.Add(thread);
+                    Thread.Sleep(5000);
                 }
                 Thread.Sleep(50000);
             }

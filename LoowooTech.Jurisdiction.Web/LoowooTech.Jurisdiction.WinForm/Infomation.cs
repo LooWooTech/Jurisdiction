@@ -57,6 +57,9 @@ namespace LoowooTech.Jurisdiction.WinForm
         public const Int32 AW_BLEND = 0x00080000;  
         public Infomation(string Message,int ID)
         {
+            this.TopMost = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            
             this.ID = ID;
             this.Message = Message;
             InitializeComponent();
