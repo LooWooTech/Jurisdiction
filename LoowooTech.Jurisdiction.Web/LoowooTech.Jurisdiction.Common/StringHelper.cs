@@ -41,6 +41,17 @@ namespace LoowooTech.Jurisdiction.Common
             
             return list;
         }
+        public static Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group>> Sort(this Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group>> Dict)
+        {
+            var newDict = new Dictionary<string, List<LoowooTech.Jurisdiction.Models.Group>>();
+            foreach (var key in Dict.Keys)
+            {
+                newDict.Add(key, Dict[key].OrderBy(e => e.Name).ToList());
+                //Dict[key] = Dict[key].OrderBy(e => e.Name).ToList();
+            }
+            return newDict;
+        }
+
 
         public static Dictionary<string, List<T[]>> DictToTable<T>(this Dictionary<string, List<T>> Dict)
         {

@@ -16,6 +16,7 @@ namespace LoowooTech.Jurisdiction.Common
         private static XmlDocument configXml { get; set; }
         private static List<string> IgnoresList { get; set; }
         private static List<string> AdminList { get; set; }
+        private static List<string> ManagerList { get; set; }
         static ADController()
         {
             ADServer = System.Configuration.ConfigurationManager.AppSettings["Server"];
@@ -28,6 +29,7 @@ namespace LoowooTech.Jurisdiction.Common
             configXml = new XmlDocument();
             configXml.Load(System.Configuration.ConfigurationManager.AppSettings["IGNORE"]);
 
+            //忽略组织单元列表
             IgnoresList = new List<string>();
             var nodes = configXml.SelectNodes("/Composes/Compose");
             if (nodes != null)
@@ -37,6 +39,7 @@ namespace LoowooTech.Jurisdiction.Common
                     IgnoresList.Add(nodes[i].Attributes["Name"].Value);
                 }
             }
+            //判断为超级管理员的组
             AdminList = new List<string>();
             nodes = configXml.SelectNodes("/Composes/Administrators/Administrator");
             if (nodes != null)
@@ -44,6 +47,16 @@ namespace LoowooTech.Jurisdiction.Common
                 for (var i = 0; i < nodes.Count; i++)
                 {
                     AdminList.Add(nodes[i].Attributes["Name"].Value);
+                }
+            }
+            //拥有审批权限的组
+            ManagerList = new List<string>();
+            nodes = configXml.SelectNodes("/Composes/Organizations/Organization");
+            if (nodes != null)
+            {
+                for (var i = 0; i < nodes.Count; i++)
+                {
+                    ManagerList.Add(nodes[i].Attributes["Name"].Value);
                 }
             }
         }
@@ -313,6 +326,21 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return false;
         }
+        public static bool IsManager(User user)
+        {
+            if (user.Group == null || user.Group.Count == 0)
+            {
+                return false;
+            }
+            foreach (var item in ManagerList)
+            {
+                if (user.Group.Contains(item))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public static void DisableAccount(string sAMAccountName)
         {
@@ -442,7 +470,7 @@ namespace LoowooTech.Jurisdiction.Common
             }
             return true;
         }
-        public static Dictionary<string, List<User>> GetUserDict(bool? IsActive=null,string Key=null)
+        public static Dictionary<string, List<User>> GetUserDict(bool? IsActive,string Key=null)
         {
             var dict = new Dictionary<string, List<User>>();
             foreach (DirectoryEntry child in GetChildren(System.Configuration.ConfigurationManager.AppSettings["PEOPLE"]))
@@ -622,9 +650,14 @@ namespace LoowooTech.Jurisdiction.Common
         {
             var tree = new TreeObject();
             tree.label = GetProperty(Entry, "name");
-            if (string.IsNullOrEmpty(tree.label) || IgnoresList.Contains(tree.label))
+            if (string.IsNullOrEmpty(tree.label) || IgnoresList.Contains(tree.label)||"内部用户"==tree.label)
             {
                 return null;
+            }
+            var description = GetProperty(Entry, "description");
+            if (!string.IsNullOrEmpty(description))
+            {
+                tree.label += "--" + description;
             }
             foreach (DirectoryEntry item in Entry.Children)
             {
@@ -642,6 +675,11 @@ namespace LoowooTech.Jurisdiction.Common
             var tree = new TreeObject();
             var admin = GetDirectoryObject();
             tree.label = GetProperty(admin, "name");
+            var description = GetProperty(admin, "description");
+            if (!string.IsNullOrEmpty(description))
+            {
+                tree.label += "--" + description;
+            }
             foreach (DirectoryEntry child in admin.Children)
             {
                 var temp = GetTreeObject(child);
@@ -746,6 +784,21 @@ namespace LoowooTech.Jurisdiction.Common
                 Error += ex.Message;
                 return false;
             }
+            return true;
+        }
+
+        public static bool MoveUserToGroup(string sAMAccountName, string NewOrganization)
+        {
+            var userEntry = GetUserObject(sAMAccountName);
+            var orgEntry = GetOrganizationObject(NewOrganization);
+            if (userEntry == null || orgEntry == null)
+            {
+                return false;
+            }
+            orgEntry = new DirectoryEntry(orgEntry.Path, ADName, ADPassword, AuthenticationTypes.Secure);
+            userEntry.MoveTo(orgEntry);
+            userEntry.CommitChanges();
+
             return true;
         }
         #endregion

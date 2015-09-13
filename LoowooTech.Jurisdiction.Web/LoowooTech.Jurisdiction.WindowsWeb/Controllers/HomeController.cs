@@ -12,7 +12,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
     {
         public ActionResult Index()
         {
-            var user = Core.UserManager.GetWindowsAccount(sAMAccountName);
+            var user = LUser;
             if (user == null)
             {
                 throw new ArgumentException("当前操作用户无法识别！");

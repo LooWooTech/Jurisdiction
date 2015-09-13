@@ -70,6 +70,10 @@ namespace LoowooTech.Jurisdiction.Manager
             {
                 user.Type = GroupType.Administrator;
             }
+            else if (ADController.IsManager(user))
+            {
+                user.Type = GroupType.Manager;
+            }
             else
             {
                 if (user.Managers.Count != 0)

@@ -15,7 +15,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.User = Core.UserManager.GetWindowsAccount(sAMAccountName);
+            ViewBag.User = LUser;
             return View();
         }
 
@@ -26,7 +26,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         public ActionResult Apply()
         {
             ViewBag.ManagerList = Core.AuthorizeManager.GetAllManager();
-            ViewBag.User = Core.UserManager.GetWindowsAccount(sAMAccountName);
+            ViewBag.User = LUser;
             return View();
         }
         public ActionResult GetGroupList(string Boss)
@@ -75,6 +75,15 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             ViewBag.List = Core.DataBookManager.Get(filter);
             ViewBag.Page = filter.Page;
             return View();
+        }
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (LUser.Type != GroupType.Member)
+            {
+                throw new HttpException(401, "你没有权限查看此页面");
+            }
+            base.OnActionExecuting(filterContext);
         }
 
     }

@@ -57,7 +57,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            return RedirectToAction("UserList");
+            return RedirectToAction("UserList", new  { IsActive=true});
         }
 
 
@@ -71,8 +71,8 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            
-            return RedirectToAction("UserList");
+
+            return RedirectToAction("UserList", new { IsActive=true});
         }
 
         public ActionResult ActiveUser(string sAMAccountName)
@@ -85,8 +85,25 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            
-            return RedirectToAction("UserList");
+
+            return RedirectToAction("UserList", new { IsActive=true});
+        }
+
+        [HttpPost]
+        public ActionResult Move(string sAMAccountName,string NewOrganization)
+        {
+            try
+            {
+                if (!ADController.MoveUserToGroup(sAMAccountName, NewOrganization))
+                {
+                    throw new ArgumentException("移动用户到新组失败！");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("移动用户到新组失败，错误信息："+ex.Message);
+            }
+            return RedirectToAction("UserList", new { IsActive=true});
         }
 
         public ActionResult Delete(string Name, bool Flag)
@@ -158,7 +175,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         public ActionResult Impower()
         {
             ViewBag.List = Core.AuthorizeManager.GetList();
-            ViewBag.Groups = ADController.GetGroupDict().DictToTable();
+            ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
             return View();
         }
 
@@ -202,6 +219,15 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         {
             var treeObject = ADController.GetTreeObject();
             return Json(treeObject, JsonRequestBehavior.AllowGet);
+        }
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (LUser.Type != GroupType.Administrator)
+            {
+                throw new HttpException(401, "你没有权限查看此页面");
+            }
+            base.OnActionExecuting(filterContext);
         }
 
     }

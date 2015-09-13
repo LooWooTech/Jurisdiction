@@ -13,17 +13,29 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         //
         // GET: /Manager/
 
+        /// <summary>
+        /// 首页
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
-            ViewBag.User = Core.UserManager.GetWindowsAccount(sAMAccountName);
+            ViewBag.User = LUser;
             return View();
         }
 
-
+        
         public ActionResult Manager()
         {
+            List<string> groups;
             //获取我管理的组
-            var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(sAMAccountName));
+            if (ADController.IsManager(LUser))
+            {
+                groups = ADController.GetGroupList();
+            }
+            else
+            {
+                groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(sAMAccountName));
+            }
             //获取当前管理组的权限审核列表
             ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
 
@@ -37,7 +49,17 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             Core.DataBookManager.Check(ID, Reason, sAMAccountName, Day, Check, status);
             Core.MessageManager.Add(Core.DataBookManager.Get(ID), ADController.GetNameBysAMAccountName(sAMAccountName));
             //待审批列表
-            var groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(sAMAccountName));
+            List<string> groups;
+            if (ADController.IsManager(LUser))
+            {
+                groups = ADController.GetGroupList();
+            }
+            else
+            {
+                groups = Core.AuthorizeManager.GetList(ADController.GetNameBysAMAccountName(sAMAccountName));
+            }
+
+            
             ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
 
             ViewBag.DGroups = ADController.GetUserDict(groups);
@@ -45,7 +67,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         }
 
 
-
+        //审批历史
         public ActionResult CHistory(bool? Label, CheckStatus status = CheckStatus.All, string Name = null, string GroupName = null, int page = 1)
         {
             var filter = new DataBookFilter
@@ -68,7 +90,7 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         public ActionResult Apply()
         {
             ViewBag.ManagerList = Core.AuthorizeManager.GetAllManager();
-            ViewBag.User = Core.UserManager.GetWindowsAccount(sAMAccountName);
+            ViewBag.User = LUser;
             return View();
         }
 
@@ -111,6 +133,15 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
             ViewBag.List = Core.DataBookManager.Get(filter);
             ViewBag.Page = filter.Page;
             return View();
+        }
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (LUser.Type != GroupType.Manager)
+            {
+                throw new HttpException(401, "你没有权限查看此页面");
+            }
+            base.OnActionExecuting(filterContext);
         }
 
     }

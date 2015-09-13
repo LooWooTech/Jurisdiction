@@ -15,8 +15,8 @@
         <label >账户状态：</label>
         <select name="IsActive" class="form-control">
             <option value="null">全部</option>
-            <option value="false" @(Request.QueryString["IsActive"]=="false"?"selected=selected":"")>禁用</option>
-            <option value="true" @(Request.QueryString["IsActive"]=="true"?"selected=selected":"")>启用</option>
+            <option value="false" @(Request.QueryString["IsActive"].ToUpper()=="FALSE"?"selected=selected":"")>禁用</option>
+            <option value="true" @(Request.QueryString["IsActive"].ToUpper()=="TRUE"?"selected=selected":"")>启用</option>
         </select>
     </div>
     <div class="form-group">
@@ -32,7 +32,7 @@
         <th style="width:100px;">姓名</th>
         <th style="width:100px;">账号</th>
         <th>所属组</th>
-        <th style="width:100px;">备注</th>
+        <th style="width:250px;">备注</th>
     </tr>
 </table>
 
@@ -61,7 +61,7 @@
                                         <span class="label label-primary " style="line-height:250%">@(entry)</span>
                                     }
                                 </td>
-                                <td style="width:100px;">
+                                <td style="width:250px;">
                                     @if (!item.IsActive)
                                     {
                                         <a href="/Admin/ActiveUser?sAMAccountName=@(item.Account)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp; 启用账户</a>
@@ -69,6 +69,22 @@
                                     {
                                         <a href="/Admin/DisableUser?sAMAccountName=@(item.Account)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 禁用账户</a>
                                     }
+                                    <form class="form-inline" style="float:right" action="/Admin/Move" method="post">
+                                        <div class="form-group">
+                                            <select name="NewOrganization">
+                                                @foreach (var org in Organizations)
+                                                {
+                                                    if (org == key)
+                                                    {
+                                                        continue;
+                                                    }
+                                                    <option value="@(org)">@(org)</option>
+                                                }
+                                            </select>
+                                            <input type="text" name="sAMAccountName" value="@(item.Account)" style="display:none" />
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-send"></i>&nbsp;移动</button>
+                                    </form>
                                 </td>
                             </tr>
                         }

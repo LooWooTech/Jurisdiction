@@ -22,6 +22,7 @@ namespace LoowooTech.Jurisdiction.Common
         }
     }
 
+
     public class UserIdentity : System.Security.Principal.IIdentity
     {
         public static UserIdentity Guest = new UserIdentity();

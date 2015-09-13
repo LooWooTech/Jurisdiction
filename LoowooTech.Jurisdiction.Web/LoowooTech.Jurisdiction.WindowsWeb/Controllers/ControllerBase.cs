@@ -16,7 +16,11 @@ namespace LoowooTech.Jurisdiction.WindowsWeb.Controllers
         //    this.Name = WindowsHelper.GetUserName(Request, HttpContext);
         //}
         protected ManagerCore Core = new ManagerCore();
-        protected User User { get; set; }
+        private User _luser { get; set; }
+        protected User LUser
+        {
+            get { return _luser == null ? _luser = Core.UserManager.GetWindowsAccount(sAMAccountName) : _luser; }
+        }
         protected string sAMAccountName
         {
             get

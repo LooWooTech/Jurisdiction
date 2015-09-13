@@ -5,7 +5,7 @@
 
 @section nav{
     <li class="@(action=="Index"?"active":null)"><a href="/Admin/Index"><i class="glyphicon glyphicon-home"></i>&nbsp;首页</a></li>
-    <li class="@(action=="UserList"?"active":null)"><a href="/Admin/UserList"><i class="glyphicon glyphicon-user"></i>&nbsp;用户</a></li>
+    <li class="@(action=="UserList"?"active":null)"><a href="/Admin/UserList?IsActive=true"><i class="glyphicon glyphicon-user"></i>&nbsp;用户</a></li>
     <li class="@(action=="Group"?"active":null)"><a href="/Admin/Group"><i class="glyphicon glyphicon-plane"></i>&nbsp;组群</a></li>
     <li class="@(action=="Impower"?"active":null)"><a href="/Admin/Impower"><i class="glyphicon glyphicon-cog"></i>&nbsp;管理&nbsp;</a></li>
     <li class="@(action=="Manager"?"active":null)"><a href="/Admin/Manager"><i class="glyphicon glyphicon-envelope"></i>&nbsp;授权审批&nbsp;<span class="badge">@(ViewBag.BCount)</span></a></li>

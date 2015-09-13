@@ -5,6 +5,9 @@
     <Administrator Name="Administrators"></Administrator>
     <Administrator Name="Domain Admins"></Administrator>
   </Administrators>
+  <Organizations>
+    <Organization Name="000ALL"></Organization>
+  </Organizations>
   <Compose Name="Builtin"></Compose>
   <Compose Name="Computers"></Compose>
   <Compose Name="Domain Controllers"></Compose>
